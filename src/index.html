@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .citySuggestion {
+            margin: 10px 0px
+        }
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            background-color: black;
+            color: white;
+            font-family: Arial;
+        }
+        .weatherForecastDayDiv {
+            margin-top: 10px;
+            border-top: white 1px solid;
+        }
+        #currentWeatherDisplay {
+            width: 80%;
+            height: 200px;
+            display: flex;
+            grid-template-columns: repeat(2, 1fr);
+            background-color: #252525;
+            border-radius: 10px;
+            padding: 1rem;
+            margin: auto;
+            align-items: center;
+        }
+        #currentWeatherPictureDiv {
+            flex: 1;
+            display: block;
+            margin: auto;
+            width: 100%;
+            height: 100%;
+        }
+        #currentWeatherPictureDiv img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        #currentTemperatureDisplayDiv{
+            text-align: center;
+            font-size: 5rem;
+            flex: 1;
+        }
+        #currentWeatherDescriptionDiv {
+            text-align: center;
+            flex: 1;
+        }
+        .forecastDayDateDiv {
+            margin-bottom: 5px;
+            margin-top: 5px;
+            font-size: 1.2rem;
+
+        }
+        .forecastPictureDiv img {
+            width: 100px;
+        }
+    </style>
+</head>
+<body>
+<p>Choose city</p>
+<input type="text" id="searchCity">
+<div id="citySuggestions"></div>
+<button id="detectPositionButton">Detect my position</button>
+<p id="myPositionDisplay"></p>
+<div id="weatherDisplay">
+    <div id="currentWeatherDisplay">
+        <div id="currentWeatherPictureDiv"></div>
+        <div id="currentTemperatureDisplayDiv"></div>
+        <div id="currentWeatherDescriptionDiv"></div>
+        <div id="currentWindSpeedDiv"></div>
+    </div>
+    <div id="weatherForecastDisplay">
+        <div class="weatherForecastDayDiv" id="forecast0">
+            <div class="forecastDayDateDiv"></div>
+            <div class="forecastPictureDiv"></div>
+            <div class="forecastDescriptionDiv"></div>
+            <div class="forecastTemperatureDiv"></div>
+        </div>
+        <div class="weatherForecastDayDiv" id="forecast1">
+            <div class="forecastDayDateDiv"></div>
+            <div class="forecastPictureDiv"></div>
+            <div class="forecastDescriptionDiv"></div>
+            <div class="forecastTemperatureDiv"></div>
+        </div>
+        <div class="weatherForecastDayDiv" id="forecast2">
+            <div class="forecastDayDateDiv"></div>
+            <div class="forecastPictureDiv"></div>
+            <div class="forecastDescriptionDiv"></div>
+            <div class="forecastTemperatureDiv"></div>
+        </div>
+        <div class="weatherForecastDayDiv" id="forecast3">
+            <div class="forecastDayDateDiv"></div>
+            <div class="forecastPictureDiv"></div>
+            <div class="forecastDescriptionDiv"></div>
+            <div class="forecastTemperatureDiv"></div>
+        </div>
+        <div class="weatherForecastDayDiv" id="forecast4">
+            <div class="forecastDayDateDiv"></div>
+            <div class="forecastPictureDiv"></div>
+            <div class="forecastDescriptionDiv"></div>
+            <div class="forecastTemperatureDiv"></div>
+        </div>
+        <div class="weatherForecastDayDiv" id="forecast5">
+            <div class="forecastDayDateDiv"></div>
+            <div class="forecastPictureDiv"></div>
+            <div class="forecastDescriptionDiv"></div>
+            <div class="forecastTemperatureDiv"></div>
+        </div>
+        <div class="weatherForecastDayDiv" id="forecast6">
+            <div class="forecastDayDateDiv"></div>
+            <div class="forecastPictureDiv"></div>
+            <div class="forecastDescriptionDiv"></div>
+            <div class="forecastTemperatureDiv"></div>
+        </div>
+    </div>
+</div>
+
+<button id="updateWeatherButton">Update weather</button>
+<input type="radio" id="farenheits" name="chooseDegreeUnits">
+<label for="farenheits">F°</label>
+<input type="radio" id="celsius" name="chooseDegreeUnits" checked>
+<label for="celsius">C°</label>
+<script src="index.js" type="module"></script>
+</body>
+</html>

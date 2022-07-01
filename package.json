@@ -1,0 +1,20 @@
+{
+  "name": "weather-app",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "parcel src/index.html",
+    "build": "rmdir /Q /S dist && parcel build src/index.html"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@parcel/resolver-glob": "^2.6.2",
+    "parcel": "^2.6.2"
+  },
+  "dependencies": {
+    "dayjs": "^1.11.3",
+    "storage-changed": "^3.0.0"
+  }
+}
