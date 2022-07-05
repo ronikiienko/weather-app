@@ -551,9 +551,8 @@ function renderWeather() {
     const position = JSON.parse(localStorage.getItem('position'));
     getWeatherByPosition(position)
         .then((weather) => {
-            drawGraphs(position, weather);
-            +
-                renderCurrentWeather(weather, position);
+            drawGraphs(position, weather)
+            renderCurrentWeather(weather, position);
             renderForecast(weather, position);
         })
 
@@ -682,61 +681,77 @@ window.setInterval(function () {
 
 
 const canvas = document.getElementById('weatherGraph');
-const ctxgraphDailyMaxTemperatureCheckbox = canvas.getContext('2d');
-const ctxgraphDailyMinTemperatureCheckbox = canvas.getContext('2d');
-const ctxgraphDailyAverageTemperatureCheckbox = canvas.getContext('2d');
-const ctxgraphHourlyTemperatureCheckbox = canvas.getContext('2d');
 const ctx = canvas.getContext('2d');
 
 const canvasWidth = canvas.width = document.body.clientWidth;
 const canvasHeight = canvas.height = 400;
 
 function drawGraphs(position, weather) {
-
+    ctx.clearRect(0, 0, canvasWidth, canvasHeight)
     const checkedGraphCheckboxesIds = JSON.parse(localStorage.getItem('checkedGraphDataTypeCheckboxes'));
     for (checkedGraphCheckboxId of checkedGraphCheckboxesIds) {
-        // this["ctx"+checkedGraphCheckboxId].clearRect(0,0, canvasWidth, canvasHeight);
-        drawGraphForContext(`ctx${checkedGraphCheckboxId}`);
-        console.log(`ctx${checkedGraphCheckboxId}`)
+        drawGraphByDataType(checkedGraphCheckboxId);
+
     }
 
-    function drawGraphForContext(context) {
+    function drawGraphByDataType(checkedGraphDataTypeCheckbox) {
         let dataToDrawInfo = null;
-        if (context === 'ctxgraphDailyMaxTemperatureCheckbox') {
+        if (checkedGraphDataTypeCheckbox === 'graphDailyMaxTemperatureCheckbox') {
             dataToDrawInfo = {
-                dataLink: weather.daily.temperature_2m_max,
-                color: 'red'
+                data: weather.daily.temperature_2m_max,
+                color: 'red',
+                minMax: [weather.daily.temperature_2m_max, weather.daily.temperature_2m_min]
             };
-        } else if (context === 'ctxgraphDailyMinTemperatureCheckbox') {
+        } else if (checkedGraphDataTypeCheckbox === 'graphDailyMinTemperatureCheckbox') {
             dataToDrawInfo = {
-                dataLink: weather.daily.temperature_2m_min,
-                color: 'blue'
+                data: weather.daily.temperature_2m_min,
+                color: 'blue',
+                minMax: [weather.daily.temperature_2m_max, weather.daily.temperature_2m_min]
             }
-        } else if (context === 'ctxgraphDailyAverageTemperatureCheckbox') {
+        } else if (checkedGraphDataTypeCheckbox === 'graphDailyAverageTemperatureCheckbox') {
+            const arr1 = weather.daily.temperature_2m_min;
+            const arr2 = weather.daily.temperature_2m_max;
+            let arrData = arr1.map((e, index) => (e + arr2[index]) / 2);
             dataToDrawInfo = {
-                dataLink: weather.daily.temperature_2m_min,
-                color: 'yellow'
+                data: arrData,
+                color: 'yellow',
+                minMax: [weather.daily.temperature_2m_max, weather.daily.temperature_2m_min]
             }
-        } else if (context === 'ctxgraphHourlyTemperatureCheckbox') {
+        } else if (checkedGraphDataTypeCheckbox === 'graphHourlyTemperatureCheckbox') {
             dataToDrawInfo = {
-                dataLink: weather.hourly.temperature_2m,
+                data: weather.hourly.temperature_2m,
                 color: 'green'
             }
         }
-        const maxValue = Math.max(...dataToDrawInfo.dataLink);
-        const minValue = Math.min(...dataToDrawInfo.dataLink);
+        let maxValue;
+        let minValue;
+        if (checkedGraphDataTypeCheckbox === 'graphHourlyTemperatureCheckbox') {
+            maxValue = Math.max(...dataToDrawInfo.data);
+            minValue = Math.min(...dataToDrawInfo.data);
+
+        } else {
+            maxValue = Math.max(...dataToDrawInfo.minMax[0]);
+            minValue = Math.min(...dataToDrawInfo.minMax[1]);
+        }
+        console.log('maxxxx', maxValue);
+        console.log('minnnn', minValue)
+
         const amplitude = maxValue - minValue;
-        const numberOfPoints = dataToDrawInfo.dataLink.length;
+        const numberOfPoints = dataToDrawInfo.data.length;
+
+        ctx.beginPath();
         for (let i = 0; i < numberOfPoints; i++) {
-            let currentY;
-            currentY = (dataToDrawInfo.dataLink[i] - minValue) / amplitude;
+            let yRatio;
+            yRatio = (dataToDrawInfo.data[i] - minValue) / amplitude;
+
 
             if (i === 0) {
-                ctx.moveTo(canvasWidth / numberOfPoints * i, canvasHeight - canvasHeight * currentY);
+                ctx.moveTo(canvasWidth / numberOfPoints * i, canvasHeight - canvasHeight * yRatio);
             } else {
-                ctx.lineTo(canvasWidth / (numberOfPoints - 1) * i, canvasHeight - canvasHeight * currentY);
+                ctx.lineTo(canvasWidth / (numberOfPoints - 1) * i, canvasHeight - canvasHeight * yRatio);
             }
         }
+        ctx.moveTo(0, 0)
         ctx.lineWidth = 3;
 
         ctx.closePath();
