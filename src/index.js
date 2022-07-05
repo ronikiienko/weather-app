@@ -19,6 +19,10 @@ const currentWeatherDescriptionDiv = document.getElementById('currentWeatherDesc
 const currentWeatherDisplay = document.getElementById('currentWeatherDisplay');
 const currentTemperatureDisplayDiv = document.getElementById('currentTemperatureDisplayDiv');
 const currentWindSpeedDiv = document.getElementById('currentWindSpeedDiv');
+const currentSunriseTimeDiv = document.getElementById('currentSunriseTimeDiv');
+const currentSunsetTimeDiv = document.getElementById('currentSunsetTimeDiv');
+const currentTime = document.getElementById('currentTime');
+const currentDate = document.getElementById('currentDate');
 
 
 const weatherForecastDayDiv = document.querySelectorAll('weatherForecastDayDiv');
@@ -27,7 +31,9 @@ const weatherForecastDayDiv = document.querySelectorAll('weatherForecastDayDiv')
 const updateWeatherButton = document.getElementById('updateWeatherButton');
 const chooseDegreeUnitsRadios = document.querySelectorAll("input[name='chooseDegreeUnits']");
 const weatherForecastDisplay = document.getElementById('weatherForecastDisplay');
-
+if (1 === 1) {
+    const h = 1 + 1;
+}
 
 function findCheckedRadioForName(name) {
     const inputs = name;
@@ -71,7 +77,7 @@ function getWeatherByPosition(position) {
     if (localStorage.getItem('degreeUnits') === 'farenheits') {
         tempUnit = 'temperature_unit=fahrenheit'
     }
-    return fetch(`https://api.open-meteo.com/v1/forecast?latitude=${position.latitude}&longitude=${position.longitude}&daily=weathercode,temperature_2m_max,temperature_2m_min&current_weather=true&windspeed_10&timezone=${position.timeZone}&${tempUnit}`)
+    return fetch(`https://api.open-meteo.com/v1/forecast?latitude=${position.latitude}&longitude=${position.longitude}&hourly=weathercode,temperature_2m,windspeed_10m&daily=sunrise,sunset,weathercode,temperature_2m_max,temperature_2m_min&current_weather=true&windspeed_10&timezone=${position.timeZone}&${tempUnit}&windspeed_unit=ms`)
         .then(resp => resp.json());
 }
 
@@ -317,6 +323,58 @@ function handleWeathercode(weathercode, timeOfTheDay) {
     return weathercodeResult;
 }
 
+function handleWindspeed(windspeed) {
+    let windName;
+    let windDescription;
+
+    if (windspeed < 0.5) {
+        windName = 'Calm';
+        windDescription = 'Smoke drifts with air, weather vanes inactive';
+    } else if (windspeed >= 0.5 && windspeed < 1.5) {
+        windName = 'Light  air';
+        windDescription = 'Weather vanes active, wind felt on face, leaves rustle';
+    } else if (windspeed >= 1.5 && windspeed < 3) {
+        windName = 'Light breeze';
+        windDescription = 'Weather vanes active, wind felt on face, leaves rustle';
+    } else if (windspeed >= 3 && windspeed < 5) {
+        windName = 'Gentle breeze';
+        windDescription = 'Leaves & small twigs move, light flags extend';
+    } else if (windspeed >= 5 && windspeed < 8) {
+        windName = 'Moderate breeze';
+        windDescription = 'Small branches sway, dust & loose paper blows about';
+    } else if (windspeed >= 8 && windspeed < 10.5) {
+        windName = 'Fresh breeze';
+        windDescription = 'Small trees sway, waves break on inland waters';
+    } else if (windspeed >= 10.5 && windspeed < 13.5) {
+        windName = 'Strong breeze';
+        windDescription = 'Large branches sway, umbrellas difficult to use';
+    } else if (windspeed >= 13.5 && windspeed < 16.5) {
+        windName = 'Moderate gale';
+        windDescription = 'Whole trees sway, difficult to walk against wind';
+    } else if (windspeed >= 16.5 && windspeed < 20) {
+        windName = 'Fresh gale';
+        windDescription = 'Twigs broken off trees, walking against wind very difficult';
+    } else if (windspeed >= 20 && windspeed < 23.5) {
+        windName = 'Strong gale'
+        windDescription = 'Slight damage to buildings, shingles blown off roof';
+    } else if (windspeed >= 23.5 && windspeed < 27.5) {
+        windName = 'Whole gale';
+        windDescription = 'Trees uprooted, considerable damage to buildings';
+    } else if (windspeed >= 27.5 && windspeed < 31.5) {
+        windName = 'Storm';
+        windDescription = 'Widespread damage, very rare occurrence';
+    } else if (windspeed >= 31.5) {
+        windName = 'Hurricane';
+        windDescription = 'Violent destruction';
+    }
+    let windspeedInfo = {
+        windspeedName: windName,
+        windspeedDescription: windDescription
+    };
+    return windspeedInfo;
+}
+
+
 function getCurrentTimeOfDay(timeZone) {
     const currentHour = dayjs.tz(dayjs(), timeZone).$H;
     if (currentHour < 7 && currentHour >= 0 || currentHour === 23) {
@@ -325,61 +383,152 @@ function getCurrentTimeOfDay(timeZone) {
         return 'day'
     }
 }
+
 function getDayInfoForDate(date) {
-    const dayInfo = {
+    let dayInfo;
+    dayInfo = {
         month: dayjs(date).format('MMMM'),
-        dayOfMonth:  dayjs(date).format('D'),
-        dayOfWeek: dayjs(date).format('dddd')
+        dayOfMonth: dayjs(date).format('D'),
+        dayOfWeek: dayjs(date).format('dddd'),
 
     }
     return dayInfo;
 }
 
-function renderCurrentWeather(weather, position) {
-    console.log(weather)
-    currentWeatherPictureDiv.textContent = '';
-    // currentWeatherPictureDivDiv.removeChild()
-    const currentWeathercode = Number(weather.current_weather.weathercode);
-    const image = document.createElement('img');
 
+function renderCurrentTime() {
+    let position = JSON.parse(window.localStorage.getItem('position'));
+    let timeZone = position.timeZone
 
-    currentTemperatureDisplayDiv.textContent = `${weather.current_weather.temperature}°`;
-    currentWeatherDescriptionDiv.textContent = `${handleWeathercode(currentWeathercode, 'night').message}`
-    currentWindSpeedDiv.textContent = `${weather.current_weather.windspeed}`
-    const currentWeatherPicture = currentWeatherPictureDiv.appendChild(image);
-    currentWeatherPicture.src = handleWeathercode(currentWeathercode, getCurrentTimeOfDay(position.timeZone)).image;
+    currentDate.textContent = dayjs.tz(dayjs(), timeZone).format('MMMM D');
+    currentTime.textContent = dayjs.tz(dayjs(), timeZone).format('HH:mm:ss');
 }
 
 
+function renderCurrentWeather(weather, position) {
+    /*console.log(position.timeZone)
+    console.log(dayjs().tz(position.timeZone))*/
+    const currentWeather = weather.current_weather;
+    currentWeatherPictureDiv.textContent = '';
+    // currentWeatherPictureDivDiv.removeChild()
+    const currentWeathercode = Number(currentWeather.weathercode);
+    const image = document.createElement('img');
+
+
+    currentTemperatureDisplayDiv.textContent = `${currentWeather.temperature}°`;
+    currentWeatherDescriptionDiv.textContent = `Sky: ${handleWeathercode(currentWeathercode, 'night').message}`
+    currentSunriseTimeDiv.textContent = `${weather.daily.sunrise[0].slice(11, 16)}`
+    currentSunsetTimeDiv.textContent = `${weather.daily.sunset[0].slice(11, 16)}`
+    // console.log(handleWindspeed(currentWeather.windspeed).windspeedName)
+    currentWindSpeedDiv.textContent = `Wind: ${handleWindspeed(currentWeather.windspeed).windspeedName}`;
+    currentWindSpeedDiv.title = `${handleWindspeed(currentWeather.windspeed).windspeedDescription}`;
+    const currentWeatherPicture = currentWeatherPictureDiv.appendChild(image);
+    currentWeatherPicture.src = handleWeathercode(currentWeathercode, getCurrentTimeOfDay(position.timeZone)).image;
+
+}
+
 
 function renderForecast(weather, position) {
-    for (let forecastPic of document.querySelectorAll('.forecastPictureDiv')) {
+    // console.log(weather)
+    for (let forecastPic of document.querySelectorAll('.forecastHourPictureDiv')) {
         forecastPic.textContent = '';
     }
-    for (let i = 0; i < 7; i++) {
-        const forecastDayInfo = getDayInfoForDate(weather.daily.time[i]);
+    for (let I = 0; I < 7; I++) {
+        const forecastDayInfo = getDayInfoForDate(weather.daily.time[I]);
         let date;
-        if (i === 0) {
+        if (I === 0) {
             date = 'Today'
-        } else if (i === 1) {
+        } else if (I === 1) {
             date = 'Tomorrow'
         } else {
-            date = weather.daily.time[i]
+            date = weather.daily.time[I]
         }
-        const currentWeathercode = Number(weather.daily.weathercode[i]);
-        const weatherForecastDay = document.getElementById(`forecast${i}`);
-        const forecastPictureDiv = weatherForecastDay.querySelector('.forecastPictureDiv');
-        const forecastTemperatureDiv = weatherForecastDay.querySelector('.forecastTemperatureDiv');
-        const forecastDescriptionDiv = weatherForecastDay.querySelector('.forecastDescriptionDiv');
-        const forecastDayDateDiv = weatherForecastDay.querySelector('.forecastDayDateDiv');
 
-        const image = document.createElement('img');
-        const forecastPicture = forecastPictureDiv.appendChild(image);
-        forecastPicture.src = handleWeathercode(currentWeathercode, 'day').image;
 
-        forecastDayDateDiv.textContent = `${forecastDayInfo.dayOfWeek}, ${forecastDayInfo.month} ${forecastDayInfo.dayOfMonth}`
-        forecastDescriptionDiv.textContent = `${handleWeathercode(currentWeathercode, 'day').message}`;
-        forecastTemperatureDiv.textContent = `${weather.daily.temperature_2m_min[i]} / ${weather.daily.temperature_2m_max[i]}`;
+        const weatherForecastDay = document.getElementById(`forecast${I}`);
+
+        const forecastDayGeneralTemperatureDiv = weatherForecastDay.querySelector('.forecastDayGeneralTemperatureDiv');
+        const forecastDayGeneralDateDiv = weatherForecastDay.querySelector('.forecastDayGeneralDateDiv');
+        const forecastDayGeneralSunriseTimeDiv = weatherForecastDay.querySelector('.forecastDayGeneralSunriseTimeDiv');
+        const forecastDayGeneralSunsetTimeDiv = weatherForecastDay.querySelector('.forecastDayGeneralSunsetTimeDiv');
+
+
+        forecastDayGeneralTemperatureDiv.textContent = `${weather.daily.temperature_2m_min[I]}° / ${weather.daily.temperature_2m_max[I]}°`;
+        let forecastDayInfoString;
+        if (I === 0) {
+            forecastDayInfoString = 'Today'
+        } else if (I === 1) {
+            forecastDayInfoString = 'Tomorrow'
+        } else {
+            forecastDayInfoString = `${forecastDayInfo.dayOfWeek}, ${forecastDayInfo.month} ${forecastDayInfo.dayOfMonth}`
+        }
+        forecastDayGeneralDateDiv.textContent = forecastDayInfoString;
+        forecastDayGeneralSunriseTimeDiv.textContent = `${weather.daily.sunrise[I].slice(11, 16)}`
+        forecastDayGeneralSunsetTimeDiv.textContent = `${weather.daily.sunset[I].slice(11, 16)}`
+
+
+        for (let i = 0; i < 4; i++) {
+            const weatherForecastHour = weatherForecastDay.getElementsByClassName(`weatherForecastHourDiv`)[i];
+
+            const forecastHourWindDescriptionDiv = weatherForecastHour.querySelector('.forecastHourWindDescriptionDiv');
+            const forecastHourPictureDiv = weatherForecastHour.querySelector('.forecastHourPictureDiv');
+            const forecastHourTemperatureDiv = weatherForecastHour.querySelector('.forecastHourTemperatureDiv');
+            const forecastHourTimeDiv = weatherForecastHour.querySelector('.forecastHourTimeDiv');
+            const forecastHourSkyDescriptionDiv = weatherForecastHour.querySelector('.forecastHourSkyDescriptionDiv');
+
+            // console.log(forecastHourTimeDiv)
+
+            function timeOfDayByI(i) {
+                let timeOfDay;
+                if (i === 0 || i === 3) {
+                    timeOfDay = 'night';
+                } else {
+                    timeOfDay = 'day';
+                }
+                return timeOfDay;
+            }
+
+            function getTimeByI(i) {
+                let time;
+                if (i === 0) {
+                    time = '4:00'
+                } else if (i === 1) {
+                    time = '10:00'
+                } else if (i === 2) {
+                    time = '16:00'
+                } else if (i === 3) {
+                    time = '23:00'
+                }
+                return time;
+            }
+
+            function getHourDataTypeByI(i, dataType) {
+                let temperature;
+                let numberInTemperatureArray;
+                if (i === 0) {
+                    numberInTemperatureArray = 4 + I * 24;
+                } else if (i === 1) {
+                    numberInTemperatureArray = 10 + I * 24;
+                } else if (i === 2) {
+                    numberInTemperatureArray = 16 + I * 24;
+                } else if (i === 3) {
+                    numberInTemperatureArray = 23 + I * 24;
+                }
+                temperature = weather.hourly[dataType][numberInTemperatureArray];
+                return temperature;
+
+            }
+
+            forecastHourTimeDiv.textContent = getTimeByI(i);
+            forecastHourTemperatureDiv.textContent = `Temperature: ${getHourDataTypeByI(i, 'temperature_2m')}°`;
+            // forecastHourDescriptionDiv.textContent = ``
+            const image = document.createElement('img');
+            const forecastHourPicture = forecastHourPictureDiv.appendChild(image);
+            forecastHourPicture.src = handleWeathercode(getHourDataTypeByI(i, 'weathercode'), timeOfDayByI(i)).image;
+            forecastHourSkyDescriptionDiv.textContent = `${handleWeathercode(getHourDataTypeByI(i, 'weathercode')).message}`;
+
+            forecastHourWindDescriptionDiv.textContent = `${handleWindspeed(getHourDataTypeByI(i, 'windspeed_10m')).windspeedName}`;
+        }
 
     }
 }
@@ -470,6 +619,10 @@ updateWeatherButton.addEventListener('click', () => {
 })
 
 
+
+
+
+
 storageChangedEmitter(window.localStorage, {
     eventName: 'storageChanged'
 })
@@ -477,6 +630,8 @@ window.addEventListener('storageChanged', (event) => {
     if (event.detail.value) {
         renderMyPosition();
         renderWeather();
+        renderCurrentTime();
+        drawGraph();
 
     }
 
@@ -487,6 +642,7 @@ function init() {
     if (localStorage.getItem('position')) {
         renderMyPosition();
         renderWeather();
+        drawGraph();
 
     }
     if (!localStorage.getItem('degreeUnits')) {
@@ -499,3 +655,56 @@ function init() {
 }
 
 init();
+
+
+renderCurrentTime();
+window.setInterval(function () {
+    renderCurrentTime()
+}, 1000);
+
+
+
+const canvas = document.getElementById('weatherGraph');
+const ctx = canvas.getContext('2d');
+const canvasWidth = canvas.width = document.body.clientWidth ;
+const canvasHeight = canvas.height = 300 ;
+
+function drawGraph() {
+    // ctx.fillRect(0,0, canvasWidth,canvasHeight)
+    const position = JSON.parse(localStorage.getItem('position'));
+    getWeatherByPosition(position)
+        .then((weather) => {
+            let dataToDraw = weather.hourly.temperature_2m
+            const numberOfPoints = dataToDraw.length;
+            const maxValue = Math.max(...dataToDraw);
+            const minValue = Math.min(...dataToDraw);
+            const amplitude = maxValue - minValue;
+            ctx.beginPath();
+            for (let i = 0; i < numberOfPoints; i++) {
+                    let currentY;
+                    currentY = (dataToDraw[i] - minValue) / amplitude
+
+                    // let currentY = dataToDraw[i] / amplitude ;
+                    console.log(currentY)
+                    if (i === 0) {
+                        ctx.moveTo(canvasWidth / numberOfPoints * i, canvasHeight - canvasHeight * currentY);
+                    }  else {
+                        ctx.lineTo(canvasWidth / numberOfPoints * i, canvasHeight - canvasHeight * currentY);
+                    }
+            }
+
+            ctx.lineWidth = 3;
+            ctx.moveTo(0, 100);
+
+            // ctx.lineTo(canvasWidth/ weather.temperature.length)
+            ctx.closePath();
+            ctx.strokeStyle = 'white';
+            ctx.stroke();
+            console.log(weather)
+        })
+
+
+}
+drawGraph()
+
+
