@@ -24,6 +24,8 @@ const currentSunsetTimeDiv = document.getElementById('currentSunsetTimeDiv');
 const currentTime = document.getElementById('currentTime');
 const currentDate = document.getElementById('currentDate');
 
+let graphCheckboxes = document.querySelectorAll('input[name=graphDataTypeCheckbox]');
+
 
 const weatherForecastDayDiv = document.querySelectorAll('weatherForecastDayDiv');
 
@@ -43,6 +45,17 @@ function findCheckedRadioForName(name) {
         }
 
     }
+}
+
+function setGraphSwitchesData() {
+    const checkedGraphCheckboxes = document.querySelectorAll('input[name=graphDataTypeCheckbox]:checked');
+    let checkedGraphChekboxesIds = [];
+    for (checkedGraphCheckbox of checkedGraphCheckboxes) {
+        checkedGraphChekboxesIds.push(checkedGraphCheckbox.id);
+    }
+    const checkedGraphCheckboxesIdsStringified = JSON.stringify(checkedGraphChekboxesIds);
+    window.localStorage.setItem('checkedGraphDataTypeCheckboxes', checkedGraphCheckboxesIdsStringified);
+
 }
 
 for (let chooseDegreeUnitsRadio of chooseDegreeUnitsRadios) {
@@ -538,7 +551,9 @@ function renderWeather() {
     const position = JSON.parse(localStorage.getItem('position'));
     getWeatherByPosition(position)
         .then((weather) => {
-            renderCurrentWeather(weather, position);
+            drawGraphs(position, weather);
+            +
+                renderCurrentWeather(weather, position);
             renderForecast(weather, position);
         })
 
@@ -619,10 +634,6 @@ updateWeatherButton.addEventListener('click', () => {
 })
 
 
-
-
-
-
 storageChangedEmitter(window.localStorage, {
     eventName: 'storageChanged'
 })
@@ -631,19 +642,20 @@ window.addEventListener('storageChanged', (event) => {
         renderMyPosition();
         renderWeather();
         renderCurrentTime();
-        drawGraph();
-
     }
 
 });
+for (graphCheckbox of graphCheckboxes) {
+    graphCheckbox.addEventListener('change', () => {
+        setGraphSwitchesData();
+    })
+}
 
 
 function init() {
     if (localStorage.getItem('position')) {
         renderMyPosition();
         renderWeather();
-        drawGraph();
-
     }
     if (!localStorage.getItem('degreeUnits')) {
         const units = findCheckedRadioForName(chooseDegreeUnitsRadios);
@@ -651,6 +663,12 @@ function init() {
     } else {
         const units = localStorage.getItem('degreeUnits')
         document.getElementById(units).checked = true;
+    }
+    for (graphCheckbox of graphCheckboxes) {
+        const checkedGraphCheckboxes = window.localStorage.getItem('checkedGraphDataTypeCheckboxes');
+        if (checkedGraphCheckboxes.includes(graphCheckbox.id)) {
+            graphCheckbox.checked = true;
+        }
     }
 }
 
@@ -663,48 +681,74 @@ window.setInterval(function () {
 }, 1000);
 
 
-
 const canvas = document.getElementById('weatherGraph');
+const ctxgraphDailyMaxTemperatureCheckbox = canvas.getContext('2d');
+const ctxgraphDailyMinTemperatureCheckbox = canvas.getContext('2d');
+const ctxgraphDailyAverageTemperatureCheckbox = canvas.getContext('2d');
+const ctxgraphHourlyTemperatureCheckbox = canvas.getContext('2d');
 const ctx = canvas.getContext('2d');
-const canvasWidth = canvas.width = document.body.clientWidth ;
-const canvasHeight = canvas.height = 300 ;
 
-function drawGraph() {
-    // ctx.fillRect(0,0, canvasWidth,canvasHeight)
-    const position = JSON.parse(localStorage.getItem('position'));
-    getWeatherByPosition(position)
-        .then((weather) => {
-            let dataToDraw = weather.hourly.temperature_2m
-            const numberOfPoints = dataToDraw.length;
-            const maxValue = Math.max(...dataToDraw);
-            const minValue = Math.min(...dataToDraw);
-            const amplitude = maxValue - minValue;
-            ctx.beginPath();
-            for (let i = 0; i < numberOfPoints; i++) {
-                    let currentY;
-                    currentY = (dataToDraw[i] - minValue) / amplitude
+const canvasWidth = canvas.width = document.body.clientWidth;
+const canvasHeight = canvas.height = 400;
 
-                    // let currentY = dataToDraw[i] / amplitude ;
-                    console.log(currentY)
-                    if (i === 0) {
-                        ctx.moveTo(canvasWidth / numberOfPoints * i, canvasHeight - canvasHeight * currentY);
-                    }  else {
-                        ctx.lineTo(canvasWidth / numberOfPoints * i, canvasHeight - canvasHeight * currentY);
-                    }
+function drawGraphs(position, weather) {
+
+    const checkedGraphCheckboxesIds = JSON.parse(localStorage.getItem('checkedGraphDataTypeCheckboxes'));
+    for (checkedGraphCheckboxId of checkedGraphCheckboxesIds) {
+        // this["ctx"+checkedGraphCheckboxId].clearRect(0,0, canvasWidth, canvasHeight);
+        drawGraphForContext(`ctx${checkedGraphCheckboxId}`);
+        console.log(`ctx${checkedGraphCheckboxId}`)
+    }
+
+    function drawGraphForContext(context) {
+        let dataToDrawInfo = null;
+        if (context === 'ctxgraphDailyMaxTemperatureCheckbox') {
+            dataToDrawInfo = {
+                dataLink: weather.daily.temperature_2m_max,
+                color: 'red'
+            };
+        } else if (context === 'ctxgraphDailyMinTemperatureCheckbox') {
+            dataToDrawInfo = {
+                dataLink: weather.daily.temperature_2m_min,
+                color: 'blue'
             }
+        } else if (context === 'ctxgraphDailyAverageTemperatureCheckbox') {
+            dataToDrawInfo = {
+                dataLink: weather.daily.temperature_2m_min,
+                color: 'yellow'
+            }
+        } else if (context === 'ctxgraphHourlyTemperatureCheckbox') {
+            dataToDrawInfo = {
+                dataLink: weather.hourly.temperature_2m,
+                color: 'green'
+            }
+        }
+        const maxValue = Math.max(...dataToDrawInfo.dataLink);
+        const minValue = Math.min(...dataToDrawInfo.dataLink);
+        const amplitude = maxValue - minValue;
+        const numberOfPoints = dataToDrawInfo.dataLink.length;
+        for (let i = 0; i < numberOfPoints; i++) {
+            let currentY;
+            currentY = (dataToDrawInfo.dataLink[i] - minValue) / amplitude;
 
-            ctx.lineWidth = 3;
-            ctx.moveTo(0, 100);
+            if (i === 0) {
+                ctx.moveTo(canvasWidth / numberOfPoints * i, canvasHeight - canvasHeight * currentY);
+            } else {
+                ctx.lineTo(canvasWidth / (numberOfPoints - 1) * i, canvasHeight - canvasHeight * currentY);
+            }
+        }
+        ctx.lineWidth = 3;
 
-            // ctx.lineTo(canvasWidth/ weather.temperature.length)
-            ctx.closePath();
-            ctx.strokeStyle = 'white';
-            ctx.stroke();
-            console.log(weather)
-        })
+        ctx.closePath();
+
+        ctx.strokeStyle = dataToDrawInfo.color;
+
+        ctx.stroke();
+    }
 
 
 }
-drawGraph()
+
+
 
 
