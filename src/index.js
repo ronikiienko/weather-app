@@ -696,17 +696,18 @@ function drawGraphs(position, weather) {
 
     function drawGraphByDataType(checkedGraphDataTypeCheckbox) {
         let dataToDrawInfo = null;
-        if (checkedGraphDataTypeCheckbox === 'graphDailyMaxTemperatureCheckbox') {
+        const minMax = [weather.daily.temperature_2m_max, weather.daily.temperature_2m_min];
+            if (checkedGraphDataTypeCheckbox === 'graphDailyMaxTemperatureCheckbox') {
             dataToDrawInfo = {
                 data: weather.daily.temperature_2m_max,
                 color: 'red',
-                minMax: [weather.daily.temperature_2m_max, weather.daily.temperature_2m_min]
+                // minMax: [weather.daily.temperature_2m_max, weather.daily.temperature_2m_min]
             };
         } else if (checkedGraphDataTypeCheckbox === 'graphDailyMinTemperatureCheckbox') {
             dataToDrawInfo = {
                 data: weather.daily.temperature_2m_min,
                 color: 'blue',
-                minMax: [weather.daily.temperature_2m_max, weather.daily.temperature_2m_min]
+                // minMax: [weather.daily.temperature_2m_max, weather.daily.temperature_2m_min]
             }
         } else if (checkedGraphDataTypeCheckbox === 'graphDailyAverageTemperatureCheckbox') {
             const arr1 = weather.daily.temperature_2m_min;
@@ -715,38 +716,50 @@ function drawGraphs(position, weather) {
             dataToDrawInfo = {
                 data: arrData,
                 color: 'yellow',
-                minMax: [weather.daily.temperature_2m_max, weather.daily.temperature_2m_min]
+                // minMax: [weather.daily.temperature_2m_max, weather.daily.temperature_2m_min]
             }
         } else if (checkedGraphDataTypeCheckbox === 'graphHourlyTemperatureCheckbox') {
             dataToDrawInfo = {
                 data: weather.hourly.temperature_2m,
-                color: 'green'
+                color: 'green',
+                // minMax: [weather.hourly.temperature_2m, weather.hourly.temperature_2m]
             }
         }
-        let maxValue;
-        let minValue;
-        if (checkedGraphDataTypeCheckbox === 'graphHourlyTemperatureCheckbox') {
-            maxValue = Math.max(...dataToDrawInfo.data);
-            minValue = Math.min(...dataToDrawInfo.data);
 
-        } else {
-            maxValue = Math.max(...dataToDrawInfo.minMax[0]);
-            minValue = Math.min(...dataToDrawInfo.minMax[1]);
-        }
-        console.log('maxxxx', maxValue);
-        console.log('minnnn', minValue)
+        const maxValue = Math.max(...minMax[0]);
+        const minValue = Math.min(...minMax[1]);
 
         const amplitude = maxValue - minValue;
         const numberOfPoints = dataToDrawInfo.data.length;
 
         ctx.beginPath();
-        for (let i = 0; i < numberOfPoints; i++) {
+        /*let i = 0;
+        let interval = setInterval(() => {
+            console.log(i)
             let yRatio;
             yRatio = (dataToDrawInfo.data[i] - minValue) / amplitude;
 
 
             if (i === 0) {
                 ctx.moveTo(canvasWidth / numberOfPoints * i, canvasHeight - canvasHeight * yRatio);
+            } else {
+
+                ctx.lineTo(canvasWidth / (numberOfPoints - 1) * i, canvasHeight - canvasHeight * yRatio);
+            }
+
+            i++;
+            if(i === numberOfPoints) {
+                clearInterval(interval);
+            }
+        }, 10);*/
+
+        for (let i = 0; i < numberOfPoints; i++) {
+            let yRatio;
+            yRatio = (dataToDrawInfo.data[i] - minValue) / amplitude;
+
+
+            if (i === 0) {
+                ctx.moveTo(canvasWidth / (numberOfPoints - 1) * i, canvasHeight - canvasHeight * yRatio);
             } else {
                 ctx.lineTo(canvasWidth / (numberOfPoints - 1) * i, canvasHeight - canvasHeight * yRatio);
             }
@@ -763,6 +776,20 @@ function drawGraphs(position, weather) {
 
 
 }
+const position = JSON.parse(localStorage.getItem('position'));
+getWeatherByPosition(position)
+    .then((weather) => {
+        canvas.addEventListener('mousemove', (event) => {
+            let graphData = weather.hourly.temperature_2m;
+            let graphDataArrayLength = graphData.length - 1;
+            let mouseMoveOffsetRatio = event.offsetX / canvasWidth;
+            let arrayNumberFromRatio = Math.floor(graphDataArrayLength * mouseMoveOffsetRatio) ;
+            console.log(graphData[arrayNumberFromRatio])
+            console.log(weather.hourly.time[arrayNumberFromRatio])
+        })
+    })
+
+
 
 
 
