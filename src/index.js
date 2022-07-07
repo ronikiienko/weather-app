@@ -683,8 +683,8 @@ window.setInterval(function () {
 const canvas = document.getElementById('weatherGraph');
 const ctx = canvas.getContext('2d');
 
-const canvasWidth = canvas.width = document.body.clientWidth;
-const canvasHeight = canvas.height = 400;
+const canvasWidth = canvas.width = document.body.clientWidth * 5;
+const canvasHeight = canvas.height = 400 * 5;
 
 function drawGraphs(position, weather) {
     ctx.clearRect(0, 0, canvasWidth, canvasHeight)
@@ -696,8 +696,8 @@ function drawGraphs(position, weather) {
 
     function drawGraphByDataType(checkedGraphDataTypeCheckbox) {
         let dataToDrawInfo = null;
-        const minMax = [weather.daily.temperature_2m_max, weather.daily.temperature_2m_min];
-            if (checkedGraphDataTypeCheckbox === 'graphDailyMaxTemperatureCheckbox') {
+
+        if (checkedGraphDataTypeCheckbox === 'graphDailyMaxTemperatureCheckbox') {
             dataToDrawInfo = {
                 data: weather.daily.temperature_2m_max,
                 color: 'red',
@@ -725,7 +725,7 @@ function drawGraphs(position, weather) {
                 // minMax: [weather.hourly.temperature_2m, weather.hourly.temperature_2m]
             }
         }
-
+        const minMax = [weather.daily.temperature_2m_max, weather.daily.temperature_2m_min];
         const maxValue = Math.max(...minMax[0]);
         const minValue = Math.min(...minMax[1]);
 
@@ -733,6 +733,7 @@ function drawGraphs(position, weather) {
         const numberOfPoints = dataToDrawInfo.data.length;
 
         ctx.beginPath();
+
         /*let i = 0;
         let interval = setInterval(() => {
             console.log(i)
@@ -752,40 +753,86 @@ function drawGraphs(position, weather) {
                 clearInterval(interval);
             }
         }, 10);*/
+        async function drawOnIntervals() {
+            let i = 0;
+            return new Promise((resolve) => {
+                let interval = setInterval(() => {
+                    let previousYRatio = (dataToDrawInfo.data[i-1] - minValue) / amplitude;
+                    let yRatio = (dataToDrawInfo.data[i] - minValue) / amplitude;
 
-        for (let i = 0; i < numberOfPoints; i++) {
-            let yRatio;
-            yRatio = (dataToDrawInfo.data[i] - minValue) / amplitude;
+                    if (i === 0) {
+                        ctx.moveTo(0, canvasHeight - canvasHeight * yRatio);
+                    } else {
+                        if (checkedGraphDataTypeCheckbox === 'graphHourlyTemperatureCheckbox') {
+                            ctx.lineTo(canvasWidth / (numberOfPoints - 1) * i, canvasHeight - canvasHeight * yRatio);
+                        } else  {
+                            ctx.lineTo(canvasWidth / (numberOfPoints  ) * i, canvasHeight - canvasHeight * previousYRatio);
+                            ctx.lineTo(canvasWidth / (numberOfPoints ) * i, canvasHeight - canvasHeight * yRatio);
+                        }
+
+                    }
+                    i++
+                    if (i === numberOfPoints) {
+                        resolve('hello');
+                        clearInterval(interval)
+                    }
+
+                }, 20)
+
+            })
+        }
+
+        drawOnIntervals()
+            .then(() => {
+                ctx.moveTo(0, 0)
+                ctx.lineWidth = 15;
+
+                ctx.closePath();
+
+                ctx.strokeStyle = dataToDrawInfo.color;
+
+                ctx.stroke();
+            })
+
+        /*for (let i = 0; i <= numberOfPoints + 1; i++) {
+            let previousYRatio = (dataToDrawInfo.data[i-1] - minValue) / amplitude;
+            let yRatio = (dataToDrawInfo.data[i] - minValue) / amplitude;
 
 
             if (i === 0) {
-                ctx.moveTo(canvasWidth / (numberOfPoints - 1) * i, canvasHeight - canvasHeight * yRatio);
+                ctx.moveTo(0, canvasHeight - canvasHeight * yRatio);
             } else {
-                ctx.lineTo(canvasWidth / (numberOfPoints - 1) * i, canvasHeight - canvasHeight * yRatio);
+                if (checkedGraphDataTypeCheckbox === 'graphHourlyTemperatureCheckbox') {
+                    ctx.lineTo(canvasWidth / (numberOfPoints - 1) * i, canvasHeight - canvasHeight * yRatio);
+                } else  {
+                    ctx.lineTo(canvasWidth / (numberOfPoints  ) * i, canvasHeight - canvasHeight * previousYRatio);
+                    ctx.lineTo(canvasWidth / (numberOfPoints ) * i, canvasHeight - canvasHeight * yRatio);
+                }
+
             }
-        }
-        ctx.moveTo(0, 0)
-        ctx.lineWidth = 3;
+        }*/
+        /*ctx.moveTo(0, 0)
+        ctx.lineWidth = 15;
 
         ctx.closePath();
 
         ctx.strokeStyle = dataToDrawInfo.color;
 
-        ctx.stroke();
+        ctx.stroke();*/
     }
 
 
 }
+
 const position = JSON.parse(localStorage.getItem('position'));
 getWeatherByPosition(position)
     .then((weather) => {
         canvas.addEventListener('mousemove', (event) => {
-            let graphData = weather.hourly.temperature_2m;
-            let graphDataArrayLength = graphData.length - 1;
-            let mouseMoveOffsetRatio = event.offsetX / canvasWidth;
-            let arrayNumberFromRatio = Math.floor(graphDataArrayLength * mouseMoveOffsetRatio) ;
-            console.log(graphData[arrayNumberFromRatio])
-            console.log(weather.hourly.time[arrayNumberFromRatio])
+            let graphData = weather.daily.temperature_2m_max;
+            let graphDataArrayLength = graphData.length;
+            let mouseMoveOffsetRatio = event.offsetX * 5 / canvasWidth;
+            let arrayNumberFromRatio = Math.floor(graphDataArrayLength * mouseMoveOffsetRatio);
+
         })
     })
 
