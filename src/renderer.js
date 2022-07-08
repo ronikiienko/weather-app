@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import {
     getCurrentTimeOfDay,
     getDayInfoForDate,
-    getWeatherAndPosition,
+    getWeatherByPosition,
     handleWeathercode,
     handleWindspeed,
 } from './utils';
@@ -145,10 +145,11 @@ function renderForecast(weather) {
 }
 
 export function renderAllWeather() {
-    getWeatherAndPosition()
-        .then((weather, position) => {
-            renderCurrentWeather(weather[0], weather[1]);
-            renderForecast(weather[0]);
+    const position = JSON.parse(localStorage.getItem('position'));
+    getWeatherByPosition(position)
+        .then((weather) => {
+            renderCurrentWeather(weather, position);
+            renderForecast(weather);
             renderMyPosition();
         });
 

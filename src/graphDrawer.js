@@ -1,10 +1,9 @@
-import {getWeatherAndPosition} from './utils';
+import {getWeatherByPosition} from './utils';
 import {canvasHeight, canvasWidth, ctx} from './variables';
 
 
 export async function drawGraphs() {
-    const data = await getWeatherAndPosition();
-    const weather = data[0];
+    const weather = await getWeatherByPosition(JSON.parse(localStorage.getItem('position')));
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
     const checkedGraphCheckboxesIds = JSON.parse(localStorage.getItem('checkedGraphDataTypeCheckboxes'));
     for (let checkedGraphCheckboxId of checkedGraphCheckboxesIds) {

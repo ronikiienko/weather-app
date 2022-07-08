@@ -8,7 +8,7 @@ import {
     detectPosition,
     findCheckedRadioForName,
     getPositionByCity,
-    getWeatherAndPosition,
+    getWeatherByPosition,
     setGraphSwitchesData,
 } from './utils';
 import {
@@ -88,6 +88,8 @@ updateWeatherButton.addEventListener('click', () => {
     renderAllWeather();
 });
 
+let weather;
+
 storageChangedEmitter(window.localStorage, {
     eventName: 'storageChanged',
 });
@@ -99,6 +101,7 @@ window.addEventListener('storageChanged', (event) => {
             renderAllWeather();
             renderCurrentTime();
             drawGraphs();
+            weather = getWeatherByPosition(JSON.parse(localStorage.getItem('position')));
         }
     }
 });
@@ -137,25 +140,26 @@ renderCurrentTime();
 window.setInterval(function () {
     renderCurrentTime();
 }, 1000);
-let weather;
 
-(async function () {
-    const data = await getWeatherAndPosition();
-    weather = data[0];
-}());
-console.log(weather);
+
 canvas.addEventListener('mousemove', (event) => {
+    if (!weather) {
+        return;
+    }
     const checkedGraphDataTypeCheckboxes = JSON.parse(localStorage.getItem('checkedGraphDataTypeCheckboxes'));
     let graphData = null;
     for (let checkedGraphDataTypeCheckbox of checkedGraphDataTypeCheckboxes) {
         switch (checkedGraphDataTypeCheckbox) {
             case 'graphDailyMaxTemperatureCheckbox':
-                graphData = weather[0].daily.temperature_2m_max;
+                graphData = weather.daily.temperature_2m_max;
+                break;
             case 'graphDailyMinTemperatureCheckbox':
-                graphData = weather[0].daily.temperature_2m_min;
+                graphData = weather.daily.temperature_2m_min;
+                break;
             // case 'graphDailyAverageTemperatureCheckbox':
             case 'graphHourlyTemperatureCheckbox':
-                graphData = weather[0].hourly.temperature_2m;
+                graphData = weather.hourly.temperature_2m;
+                break;
         }
         let graphDataArrayLength = graphData.length;
         let mouseMoveOffsetRatio = event.offsetX * 5 / canvasWidth;

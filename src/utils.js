@@ -382,14 +382,3 @@ export function setGraphSwitchesData() {
     window.localStorage.setItem('checkedGraphDataTypeCheckboxes', checkedGraphCheckboxesIdsStringified);
 
 }
-
-export function getWeatherAndPosition() {
-    return new Promise((resolve) => {
-        const position = JSON.parse(localStorage.getItem('position'));
-        getWeatherByPosition(position)
-            .then((weather) => {
-                resolve([weather, position]);
-            });
-    });
-
-}
