@@ -2,12 +2,13 @@ import dayjs from 'dayjs';
 import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import storageChangedEmitter from 'storage-changed';
-import {init, renderAllWeather, renderCurrentTime, renderMyPosition} from './renderer';
+import {drawGraphs} from './graphDrawer';
+import {renderAllWeather, renderCurrentTime, renderMyPosition} from './renderer';
 import {
     detectPosition,
     findCheckedRadioForName,
     getPositionByCity,
-    getWeatherByPosition,
+    getWeatherAndPosition,
     setGraphSwitchesData,
 } from './utils';
 import {
@@ -30,7 +31,7 @@ for (let chooseDegreeUnitsRadio of chooseDegreeUnitsRadios) {
     chooseDegreeUnitsRadio.addEventListener('change', () => {
         const units = findCheckedRadioForName(chooseDegreeUnitsRadios);
         localStorage.setItem('degreeUnits', units);
-    })
+    });
 }
 
 
@@ -39,7 +40,7 @@ let suggestedCitiesInfo = null;
 chooseCityInput.addEventListener('input', async () => {
     citySuggestions.textContent = '';
     const suggestionsResponse = await getPositionByCity(chooseCityInput.value);
-    if (!suggestionsResponse.results) return
+    if (!suggestionsResponse.results) return;
     suggestedCitiesInfo = suggestionsResponse.results;
 
     for (let suggestedCityInfo of suggestedCitiesInfo) {
@@ -47,12 +48,12 @@ chooseCityInput.addEventListener('input', async () => {
         const cityDiv = citySuggestions.appendChild(div);
         cityDiv.setAttribute('id', suggestedCityInfo.id);
         cityDiv.classList.add('citySuggestion');
-        cityDiv.textContent = `${suggestedCityInfo.name}, ${suggestedCityInfo.country}. Administrative: ${suggestedCityInfo.admin1}`
+        cityDiv.textContent = `${suggestedCityInfo.name}, ${suggestedCityInfo.country}. Administrative: ${suggestedCityInfo.admin1}`;
     }
     if (chooseCityInput.value === '') {
         citySuggestions.textContent = '';
     }
-})
+});
 
 citySuggestions.addEventListener('click', (event) => {
     if (!event.target.classList.contains('citySuggestion')) return;
@@ -66,8 +67,8 @@ citySuggestions.addEventListener('click', (event) => {
                 latitude: city.latitude,
                 longitude: city.longitude,
                 administrative: city.admin1,
-                timeZone: city.timezone
-            }
+                timeZone: city.timezone,
+            };
             JSON.stringify(position);
             localStorage.setItem('position', position);
 
@@ -77,27 +78,29 @@ citySuggestions.addEventListener('click', (event) => {
     }
     citySuggestions.textContent = '';
     chooseCityInput.value = '';
-})
+});
 
 
 detectPositionButton.addEventListener('click', () => {
-    detectPosition()
-})
+    detectPosition();
+});
 updateWeatherButton.addEventListener('click', () => {
-    renderAllWeather()
-})
-
+    renderAllWeather();
+});
 
 storageChangedEmitter(window.localStorage, {
-    eventName: 'storageChanged'
-})
+    eventName: 'storageChanged',
+});
 window.addEventListener('storageChanged', (event) => {
     if (event.detail.value) {
-        renderMyPosition();
-        renderAllWeather();
-        renderCurrentTime();
+        if (event.detail.key === 'checkedGraphDataTypeCheckboxes') {
+            drawGraphs();
+        } else {
+            renderAllWeather();
+            renderCurrentTime();
+            drawGraphs();
+        }
     }
-
 });
 
 
@@ -107,25 +110,82 @@ for (let graphCheckbox of graphCheckboxes) {
     });
 }
 
+function init() {
+    if (localStorage.getItem('position')) {
+        renderAllWeather();
+        drawGraphs();
+
+    }
+    if (!localStorage.getItem('degreeUnits')) {
+        const units = findCheckedRadioForName(chooseDegreeUnitsRadios);
+        localStorage.setItem('degreeUnits', units);
+    } else {
+        const units = localStorage.getItem('degreeUnits');
+        document.getElementById(units).checked = true;
+    }
+    for (let graphCheckbox of graphCheckboxes) {
+        const checkedGraphCheckboxes = window.localStorage.getItem('checkedGraphDataTypeCheckboxes');
+        if (checkedGraphCheckboxes.includes(graphCheckbox.id)) {
+            graphCheckbox.checked = true;
+        }
+    }
+}
+
 init();
 
 renderCurrentTime();
 window.setInterval(function () {
-    renderCurrentTime()
+    renderCurrentTime();
 }, 1000);
+let weather;
+
+(async function () {
+    const data = await getWeatherAndPosition();
+    weather = data[0];
+}());
+console.log(weather);
+canvas.addEventListener('mousemove', (event) => {
+    const checkedGraphDataTypeCheckboxes = JSON.parse(localStorage.getItem('checkedGraphDataTypeCheckboxes'));
+    let graphData = null;
+    for (let checkedGraphDataTypeCheckbox of checkedGraphDataTypeCheckboxes) {
+        switch (checkedGraphDataTypeCheckbox) {
+            case 'graphDailyMaxTemperatureCheckbox':
+                graphData = weather[0].daily.temperature_2m_max;
+            case 'graphDailyMinTemperatureCheckbox':
+                graphData = weather[0].daily.temperature_2m_min;
+            // case 'graphDailyAverageTemperatureCheckbox':
+            case 'graphHourlyTemperatureCheckbox':
+                graphData = weather[0].hourly.temperature_2m;
+        }
+        let graphDataArrayLength = graphData.length;
+        let mouseMoveOffsetRatio = event.offsetX * 5 / canvasWidth;
+        let arrayNumberFromRatio = Math.floor(graphDataArrayLength * mouseMoveOffsetRatio);
+        console.log(graphData[arrayNumberFromRatio]);
+    }
+
+});
 
 
-const position = JSON.parse(localStorage.getItem('position'));
-getWeatherByPosition(position)
-    .then((weather) => {
-        canvas.addEventListener('mousemove', (event) => {
-            let graphData = weather.daily.temperature_2m_max;
-            let graphDataArrayLength = graphData.length;
-            let mouseMoveOffsetRatio = event.offsetX * 5 / canvasWidth;
-            let arrayNumberFromRatio = Math.floor(graphDataArrayLength * mouseMoveOffsetRatio);
+/*canvas.addEventListener('mousemove', (event) => {
+    const checkedGraphDataTypeCheckboxes = JSON.parse(localStorage.getItem('checkedGraphDataTypeCheckboxes'));
+    let graphData = null;
+    for (let checkedGraphDataTypeCheckbox of checkedGraphDataTypeCheckboxes) {
+        switch (checkedGraphDataTypeCheckbox) {
+            case 'graphDailyMaxTemperatureCheckbox':
+                graphData = weather[0].daily.temperature_2m_max;
+            case 'graphDailyMinTemperatureCheckbox':
+                graphData = weather[0].daily.temperature_2m_min;
+            // case 'graphDailyAverageTemperatureCheckbox':
+            case 'graphHourlyTemperatureCheckbox':
+                graphData = weather[0].hourly.temperature_2m;
+        }
+        let graphDataArrayLength = graphData.length;
+        let mouseMoveOffsetRatio = event.offsetX * 5 / canvasWidth;
+        let arrayNumberFromRatio = Math.floor(graphDataArrayLength * mouseMoveOffsetRatio);
+    }
 
-        })
-    })
+});*/
+
 
 
 
