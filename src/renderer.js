@@ -1,8 +1,17 @@
+import dayjs from 'dayjs';
+import {
+    findCheckedRadioForName,
+    getCurrentTimeOfDay,
+    getDayInfoForDate,
+    getWeatherByPosition,
+    handleWeathercode,
+    handleWindspeed,
+} from './utils';
 import {
     canvasHeight,
     canvasWidth,
-    ctx,
     chooseDegreeUnitsRadios,
+    ctx,
     currentDate,
     currentSunriseTimeDiv,
     currentSunsetTimeDiv,
@@ -12,17 +21,8 @@ import {
     currentWeatherPictureDiv,
     currentWindSpeedDiv,
     graphCheckboxes,
-    myPositionDisplay
-} from "./variables";
-import dayjs from "dayjs";
-import {
-    findCheckedRadioForName,
-    getCurrentTimeOfDay,
-    getDayInfoForDate,
-    getWeatherByPosition,
-    handleWeathercode,
-    handleWindspeed
-} from "./utils";
+    myPositionDisplay,
+} from './variables';
 
 
 export function renderCurrentTime() {

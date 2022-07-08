@@ -1,6 +1,6 @@
-import dayjs from "dayjs";
+import dayjs from 'dayjs';
 import weatherIcons from './images/pack1svg/*.svg';
-import {chooseDegreeUnitsRadios} from "./variables";
+
 
 export function updateGeolocation() {
     return new Promise((resolve, reject) => {

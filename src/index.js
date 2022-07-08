@@ -1,23 +1,26 @@
-import storageChangedEmitter from 'storage-changed';
-import dayjs from "dayjs";
-import utc from 'dayjs/plugin/utc';
+import dayjs from 'dayjs';
 import timezone from 'dayjs/plugin/timezone';
+import utc from 'dayjs/plugin/utc';
+import storageChangedEmitter from 'storage-changed';
+import {init, renderAllWeather, renderCurrentTime, renderMyPosition} from './renderer';
 import {
     detectPosition,
     findCheckedRadioForName,
     getPositionByCity,
     getWeatherByPosition,
-    setGraphSwitchesData
-} from "./utils";
+    setGraphSwitchesData,
+} from './utils';
 import {
+    canvas,
+    canvasWidth,
     chooseCityInput,
     chooseDegreeUnitsRadios,
     citySuggestions,
     detectPositionButton,
     graphCheckboxes,
-    updateWeatherButton
-} from "./variables";
-import {init, renderCurrentTime, renderMyPosition, renderAllWeather} from "./renderer";
+    updateWeatherButton,
+} from './variables';
+
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -26,7 +29,7 @@ dayjs.extend(timezone);
 for (let chooseDegreeUnitsRadio of chooseDegreeUnitsRadios) {
     chooseDegreeUnitsRadio.addEventListener('change', () => {
         const units = findCheckedRadioForName(chooseDegreeUnitsRadios);
-        localStorage.setItem('degreeUnits', units)
+        localStorage.setItem('degreeUnits', units);
     })
 }
 
@@ -98,10 +101,10 @@ window.addEventListener('storageChanged', (event) => {
 });
 
 
-for (graphCheckbox of graphCheckboxes) {
+for (let graphCheckbox of graphCheckboxes) {
     graphCheckbox.addEventListener('change', () => {
         setGraphSwitchesData();
-    })
+    });
 }
 
 init();
