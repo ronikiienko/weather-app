@@ -24,8 +24,11 @@
         <label for="graphDailyAverageTemperatureCheckbox">Daily average temperature</label>
         <input type="checkbox" name="graphDataTypeCheckbox" id="graphHourlyTemperatureCheckbox">
         <label for="graphHourlyTemperatureCheckbox">Hourly Temperature</label>
-        <canvas id="weatherGraph">
-        </canvas>
+        <div id="canvasWrapper">
+            <canvas id="weatherGraph">
+            </canvas>
+        </div>
+
         <div id="graphDetailsBar">
             <p id="graphDateDetails"></p>
             <p id="graphDailyMinDetails"></p>

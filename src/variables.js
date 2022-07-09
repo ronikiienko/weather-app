@@ -21,12 +21,15 @@ export const weatherForecastDayDiv = document.querySelectorAll('weatherForecastD
 
 
 export const updateWeatherButton = document.getElementById('updateWeatherButton');
-export const chooseDegreeUnitsRadios = document.querySelectorAll("input[name='chooseDegreeUnits']");
+export const chooseDegreeUnitsRadios = document.querySelectorAll('input[name=\'chooseDegreeUnits\']');
 export const weatherForecastDisplay = document.getElementById('weatherForecastDisplay');
 
 
 export const canvas = document.getElementById('weatherGraph');
 export const ctx = canvas.getContext('2d');
 
-export const canvasWidth = canvas.width = document.body.clientWidth * 5;
-export const canvasHeight = canvas.height = 400 * 5;
+export const canvasWidth = canvas.width = document.body.clientWidth;
+export const canvasHeight = canvas.height = 400;
+export const canvasHeightWithBorders = canvasHeight - 40;
+export const canvasWrapper = document.getElementById('canvasWrapper');
+export const graphDetailsBar = document.getElementById('graphDetailsBar');

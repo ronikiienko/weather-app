@@ -1,6 +1,37 @@
 import {averageFromTwoArrays, getWeatherByPosition} from './utils';
-import {canvasHeight, canvasWidth, ctx} from './variables';
+import {canvasHeight, canvasHeightWithBorders, canvasWidth, ctx} from './variables';
 
+
+function handleGraphCheckboxesToDraw(checkedGraphDataTypeCheckbox, weather) {
+    let dataToDrawInfo = null;
+    let canvasHeightWithBorders = canvasHeight - 40;
+
+    if (checkedGraphDataTypeCheckbox === 'graphDailyMaxTemperatureCheckbox') {
+        dataToDrawInfo = {
+            data: weather.daily.temperature_2m_max,
+            color: 'red',
+        };
+    } else if (checkedGraphDataTypeCheckbox === 'graphDailyMinTemperatureCheckbox') {
+        dataToDrawInfo = {
+            data: weather.daily.temperature_2m_min,
+            color: 'blue',
+        };
+    } else if (checkedGraphDataTypeCheckbox === 'graphDailyAverageTemperatureCheckbox') {
+        const arr1 = weather.daily.temperature_2m_min;
+        const arr2 = weather.daily.temperature_2m_max;
+        let arrData = averageFromTwoArrays(arr1, arr2);
+        dataToDrawInfo = {
+            data: arrData,
+            color: 'yellow',
+        };
+    } else if (checkedGraphDataTypeCheckbox === 'graphHourlyTemperatureCheckbox') {
+        dataToDrawInfo = {
+            data: weather.hourly.temperature_2m,
+            color: 'green',
+        };
+    }
+    return dataToDrawInfo;
+}
 
 export async function drawGraphs() {
     const weather = await getWeatherByPosition(JSON.parse(localStorage.getItem('position')));
@@ -12,38 +43,7 @@ export async function drawGraphs() {
     }
 
     function drawGraphByDataType(checkedGraphDataTypeCheckbox) {
-        let dataToDrawInfo = null;
-        let canvasHeightWithBorders = canvasHeight - 40;
-        // let canvasHeightFromTop = 20;
-
-        if (checkedGraphDataTypeCheckbox === 'graphDailyMaxTemperatureCheckbox') {
-            dataToDrawInfo = {
-                data: weather.daily.temperature_2m_max,
-                color: 'red',
-                // minMax: [weather.daily.temperature_2m_max, weather.daily.temperature_2m_min]
-            };
-        } else if (checkedGraphDataTypeCheckbox === 'graphDailyMinTemperatureCheckbox') {
-            dataToDrawInfo = {
-                data: weather.daily.temperature_2m_min,
-                color: 'blue',
-                // minMax: [weather.daily.temperature_2m_max, weather.daily.temperature_2m_min]
-            };
-        } else if (checkedGraphDataTypeCheckbox === 'graphDailyAverageTemperatureCheckbox') {
-            const arr1 = weather.daily.temperature_2m_min;
-            const arr2 = weather.daily.temperature_2m_max;
-            let arrData = averageFromTwoArrays(arr1, arr2);
-            dataToDrawInfo = {
-                data: arrData,
-                color: 'yellow',
-                // minMax: [weather.daily.temperature_2m_max, weather.daily.temperature_2m_min]
-            };
-        } else if (checkedGraphDataTypeCheckbox === 'graphHourlyTemperatureCheckbox') {
-            dataToDrawInfo = {
-                data: weather.hourly.temperature_2m,
-                color: 'green',
-                // minMax: [weather.hourly.temperature_2m, weather.hourly.temperature_2m]
-            };
-        }
+        let dataToDrawInfo = handleGraphCheckboxesToDraw(checkedGraphDataTypeCheckbox, weather);
         const minMax = [weather.daily.temperature_2m_max, weather.daily.temperature_2m_min];
         const maxValue = Math.max(...minMax[0]);
         const minValue = Math.min(...minMax[1]);
@@ -71,7 +71,7 @@ export async function drawGraphs() {
         }
 
         ctx.moveTo(0, 0);
-        ctx.lineWidth = 22;
+        ctx.lineWidth = 5;
 
         ctx.closePath();
 
