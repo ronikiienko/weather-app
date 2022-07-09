@@ -5,11 +5,12 @@ import storageChangedEmitter from 'storage-changed';
 import {drawGraphs} from './graphDrawer';
 import {renderAllWeather, renderCurrentTime, renderMyPosition} from './renderer';
 import {
+    averageFromTwoArrays,
     detectPosition,
     findCheckedRadioForName,
     getPositionByCity,
-    getWeatherByPosition,
     setGraphSwitchesData,
+    weather,
 } from './utils';
 import {
     canvas,
@@ -88,12 +89,11 @@ updateWeatherButton.addEventListener('click', () => {
     renderAllWeather();
 });
 
-let weather;
 
 storageChangedEmitter(window.localStorage, {
     eventName: 'storageChanged',
 });
-window.addEventListener('storageChanged', (event) => {
+window.addEventListener('storageChanged', async (event) => {
     if (event.detail.value) {
         if (event.detail.key === 'checkedGraphDataTypeCheckboxes') {
             drawGraphs();
@@ -101,7 +101,7 @@ window.addEventListener('storageChanged', (event) => {
             renderAllWeather();
             renderCurrentTime();
             drawGraphs();
-            weather = getWeatherByPosition(JSON.parse(localStorage.getItem('position')));
+
         }
     }
 });
@@ -141,33 +141,63 @@ window.setInterval(function () {
     renderCurrentTime();
 }, 1000);
 
+function handleCheckedGraphCheckboxes(checkboxId) {
+    let data = null;
+    let detailBar;
+    let detailName;
+    switch (checkboxId) {
+        case 'graphDailyMaxTemperatureCheckbox':
+            data = weather.daily.temperature_2m_max;
+            detailBar = document.getElementById('graphDailyMaxDetails');
+            detailName = 'Max';
+            break;
+        case 'graphDailyMinTemperatureCheckbox':
+            data = weather.daily.temperature_2m_min;
+            detailBar = document.getElementById('graphDailyMinDetails');
+            detailName = 'Min';
+            break;
+        case 'graphHourlyTemperatureCheckbox':
+            data = weather.hourly.temperature_2m;
+            detailBar = document.getElementById('graphHourlyDetails');
+            detailName = 'Hourly';
+            break;
+        case 'graphDailyAverageTemperatureCheckbox':
+            const arr1 = weather.daily.temperature_2m_max;
+            const arr2 = weather.daily.temperature_2m_min;
+            data = averageFromTwoArrays(arr1, arr2);
+            detailBar = document.getElementById('graphDailyAverageDetails');
+            detailName = 'Average';
+    }
+    let graphDetailBarToFillInfo = {
+        dataToFill: data,
+        dataName: detailName,
+        detailBarToFill: detailBar,
+
+    };
+    return graphDetailBarToFillInfo;
+}
 
 canvas.addEventListener('mousemove', (event) => {
-    if (!weather) {
+    if (!weather || event.offsetX < 10) {
         return;
     }
     const checkedGraphDataTypeCheckboxes = JSON.parse(localStorage.getItem('checkedGraphDataTypeCheckboxes'));
-    let graphData = null;
+    let fillInfo;
     for (let checkedGraphDataTypeCheckbox of checkedGraphDataTypeCheckboxes) {
-        switch (checkedGraphDataTypeCheckbox) {
-            case 'graphDailyMaxTemperatureCheckbox':
-                graphData = weather.daily.temperature_2m_max;
-                break;
-            case 'graphDailyMinTemperatureCheckbox':
-                graphData = weather.daily.temperature_2m_min;
-                break;
-            // case 'graphDailyAverageTemperatureCheckbox':
-            case 'graphHourlyTemperatureCheckbox':
-                graphData = weather.hourly.temperature_2m;
-                break;
-        }
-        let graphDataArrayLength = graphData.length;
+        fillInfo = handleCheckedGraphCheckboxes(checkedGraphDataTypeCheckbox);
+        let graphDataArrayLength = fillInfo.dataToFill.length;
         let mouseMoveOffsetRatio = event.offsetX * 5 / canvasWidth;
         let arrayNumberFromRatio = Math.floor(graphDataArrayLength * mouseMoveOffsetRatio);
-        console.log(graphData[arrayNumberFromRatio]);
+        let arrayDateNumberFromRatio = Math.floor(7 * mouseMoveOffsetRatio);
+        fillInfo.detailBarToFill.textContent = `${fillInfo.dataName}:${fillInfo.dataToFill[arrayNumberFromRatio]}`;
+        document.getElementById('graphDateDetails').textContent = weather.daily.time[arrayDateNumberFromRatio];
+        document.getElementById('graphDetailsBar').style.top = `${event.y}px`;
+        document.getElementById('graphDetailsBar').style.left = `${event.x}px`;
+
     }
 
 });
+// TODO finish pointer graph details, make open day details on click
 
 
 /*canvas.addEventListener('mousemove', (event) => {

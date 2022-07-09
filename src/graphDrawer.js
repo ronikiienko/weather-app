@@ -1,4 +1,4 @@
-import {getWeatherByPosition} from './utils';
+import {averageFromTwoArrays, getWeatherByPosition} from './utils';
 import {canvasHeight, canvasWidth, ctx} from './variables';
 
 
@@ -13,6 +13,8 @@ export async function drawGraphs() {
 
     function drawGraphByDataType(checkedGraphDataTypeCheckbox) {
         let dataToDrawInfo = null;
+        let canvasHeightWithBorders = canvasHeight - 40;
+        // let canvasHeightFromTop = 20;
 
         if (checkedGraphDataTypeCheckbox === 'graphDailyMaxTemperatureCheckbox') {
             dataToDrawInfo = {
@@ -29,7 +31,7 @@ export async function drawGraphs() {
         } else if (checkedGraphDataTypeCheckbox === 'graphDailyAverageTemperatureCheckbox') {
             const arr1 = weather.daily.temperature_2m_min;
             const arr2 = weather.daily.temperature_2m_max;
-            let arrData = arr1.map((e, index) => (e + arr2[index]) / 2);
+            let arrData = averageFromTwoArrays(arr1, arr2);
             dataToDrawInfo = {
                 data: arrData,
                 color: 'yellow',
@@ -56,20 +58,20 @@ export async function drawGraphs() {
             let previousYRatio = (dataToDrawInfo.data[i - 1] - minValue) / amplitude;
             let yRatio = (dataToDrawInfo.data[i] - minValue) / amplitude;
             if (i === 0) {
-                ctx.moveTo(0, canvasHeight - canvasHeight * yRatio);
+                ctx.moveTo(0, canvasHeightWithBorders - canvasHeightWithBorders * yRatio);
             } else {
                 if (checkedGraphDataTypeCheckbox === 'graphHourlyTemperatureCheckbox') {
-                    ctx.lineTo(canvasWidth / (numberOfPoints - 1) * i, canvasHeight - canvasHeight * yRatio);
+                    ctx.lineTo(canvasWidth / (numberOfPoints - 1) * i, canvasHeightWithBorders - canvasHeightWithBorders * yRatio + 20);
                 } else {
-                    ctx.lineTo(canvasWidth / (numberOfPoints) * i, canvasHeight - canvasHeight * previousYRatio);
-                    ctx.lineTo(canvasWidth / (numberOfPoints) * i, canvasHeight - canvasHeight * yRatio);
+                    ctx.lineTo(canvasWidth / (numberOfPoints) * i, canvasHeightWithBorders - canvasHeightWithBorders * previousYRatio + 20);
+                    ctx.lineTo(canvasWidth / (numberOfPoints) * i, canvasHeightWithBorders - canvasHeightWithBorders * yRatio + 20);
                 }
 
             }
         }
 
         ctx.moveTo(0, 0);
-        ctx.lineWidth = 15;
+        ctx.lineWidth = 22;
 
         ctx.closePath();
 

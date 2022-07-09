@@ -2,11 +2,13 @@ import dayjs from 'dayjs';
 import weatherIcons from './images/pack1svg/*.svg';
 
 
+export let weather;
+
 export function updateGeolocation() {
     return new Promise((resolve, reject) => {
         navigator.geolocation.getCurrentPosition((position) => {
-            resolve(position)
-        })
+            resolve(position);
+        });
     });
 }
 
@@ -27,7 +29,11 @@ export function getWeatherByPosition(position) {
         tempUnit = 'temperature_unit=fahrenheit'
     }
     return fetch(`https://api.open-meteo.com/v1/forecast?latitude=${position.latitude}&longitude=${position.longitude}&hourly=weathercode,temperature_2m,windspeed_10m&daily=sunrise,sunset,weathercode,temperature_2m_max,temperature_2m_min&current_weather=true&windspeed_10&timezone=${position.timeZone}&${tempUnit}&windspeed_unit=ms`)
-        .then(resp => resp.json());
+        .then(resp => resp.json())
+        .then(json => {
+            weather = json;
+            return weather;
+        })
 }
 
 
@@ -381,4 +387,18 @@ export function setGraphSwitchesData() {
     const checkedGraphCheckboxesIdsStringified = JSON.stringify(checkedGraphChekboxesIds);
     window.localStorage.setItem('checkedGraphDataTypeCheckboxes', checkedGraphCheckboxesIdsStringified);
 
+}
+
+async function wait(delay) {
+    const interval = new Promise((resolve) => {
+        setInterval(() => {
+                resolve();
+            }, 200,
+        );
+    });
+}
+
+export function averageFromTwoArrays(arr1, arr2) {
+    let average = arr1.map((element, index) => (element + arr2[index]) / 2);
+    return average;
 }
