@@ -78,11 +78,13 @@ html {
     height: 100%;
 }
 
-#canvasWrapper {
-    width: fit-content;
-    height: fit-content;
-}
-
 #graphDetailsBar {
     position: absolute;
+    pointer-events: none;
+    background-color: black;
+    opacity: 0.7;
+}
+
+#graphDetailsBar > * {
+    margin: 0;
 }

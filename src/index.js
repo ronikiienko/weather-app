@@ -5,16 +5,18 @@ import storageChangedEmitter from 'storage-changed';
 import {drawGraphs} from './graphDrawer';
 import {renderAllWeather, renderCurrentTime, renderMyPosition} from './renderer';
 import {
-    averageFromTwoArrays,
     detectPosition,
     findCheckedRadioForName,
+    getDayInfoForDate,
     getPositionByCity,
+    handleCheckedGraphCheckboxesForDetails,
     setGraphSwitchesData,
     weather,
 } from './utils';
 import {
+    canvas,
+    canvasHeight,
     canvasWidth,
-    canvasWrapper,
     chooseCityInput,
     chooseDegreeUnitsRadios,
     citySuggestions,
@@ -110,6 +112,9 @@ window.addEventListener('storageChanged', async (event) => {
 for (let graphCheckbox of graphCheckboxes) {
     graphCheckbox.addEventListener('change', () => {
         setGraphSwitchesData();
+        for (let graphDetailDiv of graphDetailsBar.childNodes) {
+            graphDetailDiv.textContent = '';
+        }
     });
 }
 
@@ -142,45 +147,11 @@ window.setInterval(function () {
 }, 1000);
 
 // graphDetailsBar.style.display = 'none';
-function handleCheckedGraphCheckboxesForDetails(checkboxId) {
-    let data = null;
-    let detailBar;
-    let detailName;
-    switch (checkboxId) {
-        case 'graphDailyMaxTemperatureCheckbox':
-            data = weather.daily.temperature_2m_max;
-            detailBar = document.getElementById('graphDailyMaxDetails');
-            detailName = 'Max';
-            break;
-        case 'graphDailyMinTemperatureCheckbox':
-            data = weather.daily.temperature_2m_min;
-            detailBar = document.getElementById('graphDailyMinDetails');
-            detailName = 'Min';
-            break;
-        case 'graphHourlyTemperatureCheckbox':
-            data = weather.hourly.temperature_2m;
-            detailBar = document.getElementById('graphHourlyDetails');
-            detailName = 'Hourly';
-            break;
-        case 'graphDailyAverageTemperatureCheckbox':
-            const arr1 = weather.daily.temperature_2m_max;
-            const arr2 = weather.daily.temperature_2m_min;
-            data = averageFromTwoArrays(arr1, arr2);
-            detailBar = document.getElementById('graphDailyAverageDetails');
-            detailName = 'Average';
-    }
-    let graphDetailBarToFillInfo = {
-        dataToFill: data,
-        dataName: detailName,
-        detailBarToFill: detailBar,
 
-    };
-    return graphDetailBarToFillInfo;
-}
 
-canvasWrapper.addEventListener('mousemove', (event) => {
+canvas.addEventListener('mousemove', (event) => {
+    event.stopPropagation();
     graphDetailsBar.style.display = 'block';
-    console.log('a');
     if (!weather || event.offsetX < 10) {
         return;
     }
@@ -193,39 +164,59 @@ canvasWrapper.addEventListener('mousemove', (event) => {
         let graphDataArrayLength = fillInfo.dataToFill.length;
         let arrayNumberFromRatio = Math.floor(graphDataArrayLength * mouseMoveOffsetRatio);
         let arrayDateNumberFromRatio = Math.floor(7 * mouseMoveOffsetRatio);
-        fillInfo.detailBarToFill.textContent = `${fillInfo.dataName}:${fillInfo.dataToFill[arrayNumberFromRatio]}`;
-        document.getElementById('graphDateDetails').textContent = weather.daily.time[arrayDateNumberFromRatio];
+        let arrayHourNumberFromRatio = Math.floor(168 * mouseMoveOffsetRatio);
+        fillInfo.detailDivToFill.textContent = `${fillInfo.dataName}${fillInfo.dataToFill[arrayNumberFromRatio]}°`;
+        document.getElementById('graphTimeDetails').textContent = weather.hourly.time[arrayHourNumberFromRatio].slice(11, 16);
 
+
+        const graphDayInfo = getDayInfoForDate(weather.daily.time[arrayDateNumberFromRatio]);
+        let graphDayInfoString;
+        if (arrayDateNumberFromRatio === 0) {
+            graphDayInfoString = 'Today';
+        } else if (arrayDateNumberFromRatio === 1) {
+            graphDayInfoString = 'Tomorrow';
+        } else {
+            graphDayInfoString = `${graphDayInfo.dayOfWeekShort}, ${graphDayInfo.monthShort} ${graphDayInfo.dayOfMonth}`;
+        }
+        document.getElementById('graphDateDetails').textContent = graphDayInfoString;
 
     }
-    graphDetailsBar.style.top = `${event.offsetY}px`;
-    graphDetailsBar.style.left = `${event.offsetX}px`;
+    const graphDetailsBarWidth = graphDetailsBar.offsetWidth;
+    const graphDetailsBarHeight = graphDetailsBar.offsetHeight;
+    if (event.offsetX >= canvasWidth - graphDetailsBarWidth * 2) {
+        if (event.offsetY >= canvasHeight - graphDetailsBarHeight) {
+            graphDetailsBar.style.top = `${event.pageY - graphDetailsBarHeight}px`;
+        } else {
+            graphDetailsBar.style.top = `${event.pageY + 10}px`;
+        }
+
+        graphDetailsBar.style.left = `${event.pageX - 10 - graphDetailsBarWidth}px`;
+    } else {
+        if (event.offsetY >= canvasHeight - graphDetailsBarHeight / 2) {
+            graphDetailsBar.style.top = `${event.pageY - graphDetailsBarHeight}px`;
+        } else {
+            graphDetailsBar.style.top = `${event.pageY + 10}px`;
+        }
+        graphDetailsBar.style.left = `${event.pageX + 10}px`;
+    }
+
 
 });
 // TODO finish pointer graph details, make open day details on click
-canvasWrapper.addEventListener('mouseleave', () => {
+canvas.addEventListener('mouseleave', () => {
     graphDetailsBar.style.display = 'none';
 });
-
-/*canvas.addEventListener('mousemove', (event) => {
-    const checkedGraphDataTypeCheckboxes = JSON.parse(localStorage.getItem('checkedGraphDataTypeCheckboxes'));
-    let graphData = null;
-    for (let checkedGraphDataTypeCheckbox of checkedGraphDataTypeCheckboxes) {
-        switch (checkedGraphDataTypeCheckbox) {
-            case 'graphDailyMaxTemperatureCheckbox':
-                graphData = weather[0].daily.temperature_2m_max;
-            case 'graphDailyMinTemperatureCheckbox':
-                graphData = weather[0].daily.temperature_2m_min;
-            // case 'graphDailyAverageTemperatureCheckbox':
-            case 'graphHourlyTemperatureCheckbox':
-                graphData = weather[0].hourly.temperature_2m;
-        }
-        let graphDataArrayLength = graphData.length;
-        let mouseMoveOffsetRatio = event.offsetX * 5 / canvasWidth;
-        let arrayNumberFromRatio = Math.floor(graphDataArrayLength * mouseMoveOffsetRatio);
+/*async function delay(delay) {
+    for (let i = 0; i < 100; i++) {
+        await wait(delay);
+        console.log('hello');
     }
+}
+delay(200)
+    .catch(() => {
+        console.log('error');
+    })*/
 
-});*/
 
 
 

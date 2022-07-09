@@ -1,4 +1,4 @@
-import {averageFromTwoArrays, getWeatherByPosition} from './utils';
+import {averageFromTwoArrays, getWeatherByPosition, wait} from './utils';
 import {canvasHeight, canvasHeightWithBorders, canvasWidth, ctx} from './variables';
 
 
@@ -9,12 +9,12 @@ function handleGraphCheckboxesToDraw(checkedGraphDataTypeCheckbox, weather) {
     if (checkedGraphDataTypeCheckbox === 'graphDailyMaxTemperatureCheckbox') {
         dataToDrawInfo = {
             data: weather.daily.temperature_2m_max,
-            color: 'red',
+            color: 'rgba(255,0,0,0.3)',
         };
     } else if (checkedGraphDataTypeCheckbox === 'graphDailyMinTemperatureCheckbox') {
         dataToDrawInfo = {
             data: weather.daily.temperature_2m_min,
-            color: 'blue',
+            color: 'rgba(0,0,255,0.3)',
         };
     } else if (checkedGraphDataTypeCheckbox === 'graphDailyAverageTemperatureCheckbox') {
         const arr1 = weather.daily.temperature_2m_min;
@@ -22,12 +22,12 @@ function handleGraphCheckboxesToDraw(checkedGraphDataTypeCheckbox, weather) {
         let arrData = averageFromTwoArrays(arr1, arr2);
         dataToDrawInfo = {
             data: arrData,
-            color: 'yellow',
+            color: 'rgba(255,255,0,0.3)',
         };
     } else if (checkedGraphDataTypeCheckbox === 'graphHourlyTemperatureCheckbox') {
         dataToDrawInfo = {
             data: weather.hourly.temperature_2m,
-            color: 'green',
+            color: 'rgb(0,255,0)',
         };
     }
     return dataToDrawInfo;
@@ -37,12 +37,8 @@ export async function drawGraphs() {
     const weather = await getWeatherByPosition(JSON.parse(localStorage.getItem('position')));
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
     const checkedGraphCheckboxesIds = JSON.parse(localStorage.getItem('checkedGraphDataTypeCheckboxes'));
-    for (let checkedGraphCheckboxId of checkedGraphCheckboxesIds) {
-        drawGraphByDataType(checkedGraphCheckboxId);
 
-    }
-
-    function drawGraphByDataType(checkedGraphDataTypeCheckbox) {
+    async function drawGraphByDataType(checkedGraphDataTypeCheckbox) {
         let dataToDrawInfo = handleGraphCheckboxesToDraw(checkedGraphDataTypeCheckbox, weather);
         const minMax = [weather.daily.temperature_2m_max, weather.daily.temperature_2m_min];
         const maxValue = Math.max(...minMax[0]);
@@ -55,10 +51,11 @@ export async function drawGraphs() {
 
 
         for (let i = 0; i <= numberOfPoints; i++) {
+
             let previousYRatio = (dataToDrawInfo.data[i - 1] - minValue) / amplitude;
             let yRatio = (dataToDrawInfo.data[i] - minValue) / amplitude;
             if (i === 0) {
-                ctx.moveTo(0, canvasHeightWithBorders - canvasHeightWithBorders * yRatio);
+                ctx.moveTo(0, canvasHeightWithBorders - canvasHeightWithBorders * yRatio + 20);
             } else {
                 if (checkedGraphDataTypeCheckbox === 'graphHourlyTemperatureCheckbox') {
                     ctx.lineTo(canvasWidth / (numberOfPoints - 1) * i, canvasHeightWithBorders - canvasHeightWithBorders * yRatio + 20);
@@ -68,10 +65,11 @@ export async function drawGraphs() {
                 }
 
             }
+            await wait(20);
         }
 
         ctx.moveTo(0, 0);
-        ctx.lineWidth = 5;
+        ctx.lineWidth = 3;
 
         ctx.closePath();
 
@@ -82,5 +80,8 @@ export async function drawGraphs() {
 
     }
 
+    for (let checkedGraphCheckboxId of checkedGraphCheckboxesIds) {
+        drawGraphByDataType(checkedGraphCheckboxId);
+    }
 
 }

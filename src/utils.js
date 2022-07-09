@@ -16,7 +16,7 @@ export function updateGeolocation() {
 export const getLocationDataByPosition = (position) => {
     return fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${position.latitude}&longitude=${position.longitude}`)
         .then(resp => resp.json());
-}
+};
 
 export function getPositionByCity(city) {
     return fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${city}`)
@@ -26,23 +26,23 @@ export function getPositionByCity(city) {
 export function getWeatherByPosition(position) {
     let tempUnit;
     if (localStorage.getItem('degreeUnits') === 'farenheits') {
-        tempUnit = 'temperature_unit=fahrenheit'
+        tempUnit = 'temperature_unit=fahrenheit';
     }
     return fetch(`https://api.open-meteo.com/v1/forecast?latitude=${position.latitude}&longitude=${position.longitude}&hourly=weathercode,temperature_2m,windspeed_10m&daily=sunrise,sunset,weathercode,temperature_2m_max,temperature_2m_min&current_weather=true&windspeed_10&timezone=${position.timeZone}&${tempUnit}&windspeed_unit=ms`)
         .then(resp => resp.json())
         .then(json => {
             weather = json;
             return weather;
-        })
+        });
 }
 
 
 export function getCurrentTimeOfDay(timeZone) {
     const currentHour = dayjs.tz(dayjs(), timeZone).$H;
     if (currentHour < 7 && currentHour >= 0 || currentHour === 23) {
-        return 'night'
+        return 'night';
     } else {
-        return 'day'
+        return 'day';
     }
 }
 
@@ -51,10 +51,11 @@ export function getDayInfoForDate(date) {
     let dayInfo;
     dayInfo = {
         month: dayjs(date).format('MMMM'),
+        monthShort: dayjs(date).format('MMM'),
         dayOfMonth: dayjs(date).format('D'),
         dayOfWeek: dayjs(date).format('dddd'),
-
-    }
+        dayOfWeekShort: dayjs(date).format('dd'),
+    };
     return dayInfo;
 }
 
@@ -71,14 +72,14 @@ export function detectPosition() {
                         latitude: response.latitude,
                         longitude: response.longitude,
                         administrative: response.principalSubdivision,
-                        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+                        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
 
-                    }
+                    };
                     JSON.stringify(position);
-                    localStorage.setItem('position', position)
+                    localStorage.setItem('position', position);
 
-                })
-        })
+                });
+        });
 }
 
 export function handleWeathercode(weathercode, timeOfTheDay) {
@@ -122,7 +123,7 @@ export function handleWeathercode(weathercode, timeOfTheDay) {
             if (timeOfTheDay === 'night') {
                 weathercodeImage = weatherIcons['Fog-Night'];
             } else {
-                weathercodeImage = weatherIcons['Fog']
+                weathercodeImage = weatherIcons['Fog'];
             }
             break;
         case 48:
@@ -176,17 +177,17 @@ export function handleWeathercode(weathercode, timeOfTheDay) {
         case 61:
             weathercodeTextMessage = 'Slight rain';
             if (timeOfTheDay === 'night') {
-                weathercodeImage = weatherIcons['Rain-Night']
+                weathercodeImage = weatherIcons['Rain-Night'];
             } else {
-                weathercodeImage = weatherIcons['Rain']
+                weathercodeImage = weatherIcons['Rain'];
             }
             break;
         case 63:
             weathercodeTextMessage = 'Moderate rain';
             if (timeOfTheDay === 'night') {
-                weathercodeImage = weatherIcons['Rain-Night']
+                weathercodeImage = weatherIcons['Rain-Night'];
             } else {
-                weathercodeImage = weatherIcons['Rain']
+                weathercodeImage = weatherIcons['Rain'];
             }
             break;
         case 65:
@@ -248,25 +249,25 @@ export function handleWeathercode(weathercode, timeOfTheDay) {
         case 80:
             weathercodeTextMessage = 'Slight rain showers';
             if (timeOfTheDay === 'night') {
-                weathercodeImage = weatherIcons['Scattered-Showers-Night']
+                weathercodeImage = weatherIcons['Scattered-Showers-Night'];
             } else {
-                weathercodeImage = weatherIcons['Scattered-Showers']
+                weathercodeImage = weatherIcons['Scattered-Showers'];
             }
             break;
         case 81:
             weathercodeTextMessage = 'Moderate rain showers';
             if (timeOfTheDay === 'night') {
-                weathercodeImage = weatherIcons['Scattered-Showers-Night']
+                weathercodeImage = weatherIcons['Scattered-Showers-Night'];
             } else {
-                weathercodeImage = weatherIcons['Scattered-Showers']
+                weathercodeImage = weatherIcons['Scattered-Showers'];
             }
             break;
         case 82:
             weathercodeTextMessage = 'Violent rain showers';
             if (timeOfTheDay === 'night') {
-                weathercodeImage = weatherIcons['Scattered-Showers-Night']
+                weathercodeImage = weatherIcons['Scattered-Showers-Night'];
             } else {
-                weathercodeImage = weatherIcons['Scattered-Showers']
+                weathercodeImage = weatherIcons['Scattered-Showers'];
             }
             break;
         case 85:
@@ -312,8 +313,8 @@ export function handleWeathercode(weathercode, timeOfTheDay) {
     }
     const weathercodeResult = {
         message: weathercodeTextMessage,
-        image: weathercodeImage
-    }
+        image: weathercodeImage,
+    };
     return weathercodeResult;
 }
 
@@ -349,7 +350,7 @@ export function handleWindspeed(windspeed) {
         windName = 'Fresh gale';
         windDescription = 'Twigs broken off trees, walking against wind very difficult';
     } else if (windspeed >= 20 && windspeed < 23.5) {
-        windName = 'Strong gale'
+        windName = 'Strong gale';
         windDescription = 'Slight damage to buildings, shingles blown off roof';
     } else if (windspeed >= 23.5 && windspeed < 27.5) {
         windName = 'Whole gale';
@@ -363,7 +364,7 @@ export function handleWindspeed(windspeed) {
     }
     let windspeedInfo = {
         windspeedName: windName,
-        windspeedDescription: windDescription
+        windspeedDescription: windDescription,
     };
     return windspeedInfo;
 }
@@ -389,11 +390,11 @@ export function setGraphSwitchesData() {
 
 }
 
-async function wait(delay) {
-    const interval = new Promise((resolve) => {
+export async function wait(delay) {
+    return new Promise((resolve) => {
         setInterval(() => {
                 resolve();
-            }, 200,
+            }, delay,
         );
     });
 }
@@ -401,4 +402,43 @@ async function wait(delay) {
 export function averageFromTwoArrays(arr1, arr2) {
     let average = arr1.map((element, index) => (element + arr2[index]) / 2);
     return average;
+}
+
+export function handleCheckedGraphCheckboxesForDetails(checkboxId) {
+    let data = null;
+    let detailDiv;
+    let detailName;
+    switch (checkboxId) {
+        case 'graphDailyMaxTemperatureCheckbox':
+            data = weather.daily.temperature_2m_max;
+            detailDiv = document.getElementById('graphDailyMaxDetails');
+            detailName = 'Max: ';
+            break;
+        case 'graphDailyMinTemperatureCheckbox':
+            data = weather.daily.temperature_2m_min;
+            detailDiv = document.getElementById('graphDailyMinDetails');
+            detailName = 'Min: ';
+            break;
+        case 'graphHourlyTemperatureCheckbox':
+            data = weather.hourly.temperature_2m;
+            detailDiv = document.getElementById('graphHourlyDetails');
+            detailName = '';
+            break;
+        case 'graphDailyAverageTemperatureCheckbox':
+            const arr1 = weather.daily.temperature_2m_max;
+            const arr2 = weather.daily.temperature_2m_min;
+            const averageFromMinMaxArrays = averageFromTwoArrays(arr1, arr2);
+            data = averageFromMinMaxArrays.map((element) => {
+                return Number(element.toFixed(1));
+            });
+            detailDiv = document.getElementById('graphDailyAverageDetails');
+            detailName = 'Avg: ';
+    }
+    let graphDetailBarToFillInfo = {
+        dataToFill: data,
+        dataName: detailName,
+        detailDivToFill: detailDiv,
+
+    };
+    return graphDetailBarToFillInfo;
 }

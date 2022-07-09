@@ -89,14 +89,14 @@ function renderForecast(weather) {
     }
     for (let I = 0; I < 7; I++) {
         const forecastDayInfo = getDayInfoForDate(weather.daily.time[I]);
-        let date;
+        /*let date;
         if (I === 0) {
             date = 'Today';
         } else if (I === 1) {
             date = 'Tomorrow';
         } else {
             date = weather.daily.time[I];
-        }
+        }*/
 
 
         const weatherForecastDay = document.getElementById(`forecast${I}`);
