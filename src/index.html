@@ -13,9 +13,11 @@
 <input type="text" id="searchCity">
 <div id="citySuggestions"></div>
 <button id="detectPositionButton">Detect my position</button>
+<button id="updateCanvasDimensions">Update canvas dimensions</button>
 <p id="myPositionDisplay"></p>
 <div id="weatherDisplay">
     <div id="weatherGraphDiv">
+
         <input type="checkbox" name="graphDataTypeCheckbox" id="graphDailyMaxTemperatureCheckbox">
         <label for="graphDailyMaxTemperatureCheckbox">Daily maximum temperature</label>
         <input type="checkbox" name="graphDataTypeCheckbox" id="graphDailyMinTemperatureCheckbox">
@@ -24,8 +26,27 @@
         <label for="graphDailyAverageTemperatureCheckbox">Daily average temperature</label>
         <input type="checkbox" name="graphDataTypeCheckbox" id="graphHourlyTemperatureCheckbox">
         <label for="graphHourlyTemperatureCheckbox">Hourly Temperature</label>
-        <canvas id="weatherGraph">
-        </canvas>
+        <div id="weatherGraphWrapper">
+            <div id="graphTemperatureMarksBar">
+                <div id="graphTemperatureMarkDiv0"></div>
+                <div id="graphTemperatureMarkDiv1"></div>
+                <div id="graphTemperatureMarkDiv2"></div>
+                <div id="graphTemperatureMarkDiv3"></div>
+                <div id="graphTemperatureMarkDiv4"></div>
+            </div>
+            <canvas id="weatherGraph">
+            </canvas>
+
+            <div id="graphDatesBar">
+                <div id="graphDateDiv0"></div>
+                <div id="graphDateDiv1"></div>
+                <div id="graphDateDiv2"></div>
+                <div id="graphDateDiv3"></div>
+                <div id="graphDateDiv4"></div>
+                <div id="graphDateDiv5"></div>
+                <div id="graphDateDiv6"></div>
+            </div>
+        </div>
 
         <div id="graphDetailsBar">
             <p id="graphDateDetails"></p>
@@ -304,7 +325,6 @@
     </div>
 
 </div>
-
 <button id="updateWeatherButton">Update weather</button>
 <input type="radio" id="farenheits" name="chooseDegreeUnits">
 <label for="farenheits">F°</label>

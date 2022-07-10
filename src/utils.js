@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import weatherIcons from './images/pack1svg/*.svg';
+import {graphCheckboxes} from './variables';
 
 
 export let weather;
@@ -392,7 +393,7 @@ export function setGraphSwitchesData() {
 
 export async function wait(delay) {
     return new Promise((resolve) => {
-        setInterval(() => {
+        setTimeout(() => {
                 resolve();
             }, delay,
         );
@@ -441,4 +442,16 @@ export function handleCheckedGraphCheckboxesForDetails(checkboxId) {
 
     };
     return graphDetailBarToFillInfo;
+}
+
+export function disableEnableGraphCheckboxes() {
+    for (let graphCheckbox of graphCheckboxes) {
+        if (graphCheckbox.disabled === false) {
+            graphCheckbox.disabled = true;
+        } else {
+            graphCheckbox.disabled = false;
+        }
+
+    }
+
 }

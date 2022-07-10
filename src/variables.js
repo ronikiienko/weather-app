@@ -28,8 +28,18 @@ export const weatherForecastDisplay = document.getElementById('weatherForecastDi
 export const canvas = document.getElementById('weatherGraph');
 export const ctx = canvas.getContext('2d');
 
-export const canvasWidth = canvas.width = document.body.clientWidth;
-export const canvasHeight = canvas.height = 400;
-export const canvasHeightWithBorders = canvasHeight - 40;
+export const graphTemperatureMarksBar = document.getElementById('graphTemperatureMarksBar');
+export let canvasWidth = canvas.width = window.innerWidth - graphTemperatureMarksBar.offsetWidth;
+export let canvasHeight = canvas.height = window.innerHeight / 3;
+export let canvasHeightWithBorders = canvasHeight - 40;
+
+export function updateCanvasDimensions() {
+    canvasWidth = canvas.width = window.innerWidth - graphTemperatureMarksBar.offsetWidth;
+    canvasHeight = canvas.height = window.innerHeight / 3;
+    canvasHeightWithBorders = canvasHeight - 40;
+
+}
+
 export const canvasWrapper = document.getElementById('canvasWrapper');
 export const graphDetailsBar = document.getElementById('graphDetailsBar');
+export const graphDatesBar = document.getElementById('graphDatesBar');

@@ -23,6 +23,7 @@ import {
     detectPositionButton,
     graphCheckboxes,
     graphDetailsBar,
+    updateCanvasDimensions,
     updateWeatherButton,
 } from './variables';
 
@@ -112,7 +113,7 @@ window.addEventListener('storageChanged', async (event) => {
 for (let graphCheckbox of graphCheckboxes) {
     graphCheckbox.addEventListener('change', () => {
         setGraphSwitchesData();
-        for (let graphDetailDiv of graphDetailsBar.childNodes) {
+        for (let graphDetailDiv of graphDetailsBar.children) {
             graphDetailDiv.textContent = '';
         }
     });
@@ -150,7 +151,9 @@ window.setInterval(function () {
 
 
 canvas.addEventListener('mousemove', (event) => {
-    event.stopPropagation();
+    const offsetFromCanvasY = event.offsetY;
+    const offsetFromCanvasX = event.offsetX;
+
     graphDetailsBar.style.display = 'block';
     if (!weather || event.offsetX < 10) {
         return;
@@ -158,7 +161,7 @@ canvas.addEventListener('mousemove', (event) => {
 
     const checkedGraphDataTypeCheckboxes = JSON.parse(localStorage.getItem('checkedGraphDataTypeCheckboxes'));
     let fillInfo;
-    let mouseMoveOffsetRatio = event.offsetX / canvasWidth;
+    let mouseMoveOffsetRatio = offsetFromCanvasX / canvasWidth;
     for (let checkedGraphDataTypeCheckbox of checkedGraphDataTypeCheckboxes) {
         fillInfo = handleCheckedGraphCheckboxesForDetails(checkedGraphDataTypeCheckbox);
         let graphDataArrayLength = fillInfo.dataToFill.length;
@@ -181,10 +184,12 @@ canvas.addEventListener('mousemove', (event) => {
         document.getElementById('graphDateDetails').textContent = graphDayInfoString;
 
     }
+
+
     const graphDetailsBarWidth = graphDetailsBar.offsetWidth;
     const graphDetailsBarHeight = graphDetailsBar.offsetHeight;
-    if (event.offsetX >= canvasWidth - graphDetailsBarWidth * 2) {
-        if (event.offsetY >= canvasHeight - graphDetailsBarHeight) {
+    if (offsetFromCanvasX >= canvasWidth - graphDetailsBarWidth * 4) {
+        if (offsetFromCanvasY >= canvasHeight - graphDetailsBarHeight) {
             graphDetailsBar.style.top = `${event.pageY - graphDetailsBarHeight}px`;
         } else {
             graphDetailsBar.style.top = `${event.pageY + 10}px`;
@@ -192,7 +197,7 @@ canvas.addEventListener('mousemove', (event) => {
 
         graphDetailsBar.style.left = `${event.pageX - 10 - graphDetailsBarWidth}px`;
     } else {
-        if (event.offsetY >= canvasHeight - graphDetailsBarHeight / 2) {
+        if (offsetFromCanvasY >= canvasHeight - graphDetailsBarHeight / 2) {
             graphDetailsBar.style.top = `${event.pageY - graphDetailsBarHeight}px`;
         } else {
             graphDetailsBar.style.top = `${event.pageY + 10}px`;
@@ -206,17 +211,14 @@ canvas.addEventListener('mousemove', (event) => {
 canvas.addEventListener('mouseleave', () => {
     graphDetailsBar.style.display = 'none';
 });
-/*async function delay(delay) {
-    for (let i = 0; i < 100; i++) {
-        await wait(delay);
-        console.log('hello');
-    }
-}
-delay(200)
-    .catch(() => {
-        console.log('error');
-    })*/
+/*window.addEventListener('resize', () => {
+    drawGraphs();
+});*/
 
+document.getElementById('updateCanvasDimensions').addEventListener('click', () => {
+    updateCanvasDimensions();
+    drawGraphs();
+});
 
 
 
