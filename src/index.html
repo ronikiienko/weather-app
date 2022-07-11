@@ -13,51 +13,51 @@
 <input type="text" id="searchCity">
 <div id="citySuggestions"></div>
 <button id="detectPositionButton">Detect my position</button>
-<button id="updateCanvasDimensions">Update canvas dimensions</button>
 <p id="myPositionDisplay"></p>
-<div id="weatherDisplay">
-    <div id="weatherGraphDiv">
 
-        <input type="checkbox" name="graphDataTypeCheckbox" id="graphDailyMaxTemperatureCheckbox">
-        <label for="graphDailyMaxTemperatureCheckbox">Daily maximum temperature</label>
-        <input type="checkbox" name="graphDataTypeCheckbox" id="graphDailyMinTemperatureCheckbox">
-        <label for="graphDailyMinTemperatureCheckbox">Daily minimum temperature</label>
-        <input type="checkbox" name="graphDataTypeCheckbox" id="graphDailyAverageTemperatureCheckbox">
-        <label for="graphDailyAverageTemperatureCheckbox">Daily average temperature</label>
-        <input type="checkbox" name="graphDataTypeCheckbox" id="graphHourlyTemperatureCheckbox">
-        <label for="graphHourlyTemperatureCheckbox">Hourly Temperature</label>
-        <div id="weatherGraphWrapper">
-            <div id="graphTemperatureMarksBar">
-                <div id="graphTemperatureMarkDiv0"></div>
-                <div id="graphTemperatureMarkDiv1"></div>
-                <div id="graphTemperatureMarkDiv2"></div>
-                <div id="graphTemperatureMarkDiv3"></div>
-                <div id="graphTemperatureMarkDiv4"></div>
-            </div>
-            <canvas id="weatherGraph">
-            </canvas>
-
-            <div id="graphDatesBar">
-                <div id="graphDateDiv0"></div>
-                <div id="graphDateDiv1"></div>
-                <div id="graphDateDiv2"></div>
-                <div id="graphDateDiv3"></div>
-                <div id="graphDateDiv4"></div>
-                <div id="graphDateDiv5"></div>
-                <div id="graphDateDiv6"></div>
-            </div>
-        </div>
-
-        <div id="graphDetailsBar">
-            <p id="graphDateDetails"></p>
-            <p id="graphTimeDetails"></p>
-            <p id="graphHourlyDetails"></p>
-            <p id="graphDailyMinDetails"></p>
-            <p id="graphDailyMaxDetails"></p>
-            <p id="graphDailyAverageDetails"></p>
-        </div>
+<div id="graphDataTypeCheckboxes">
+    <input type="checkbox" name="graphDataTypeCheckbox" id="graphDailyMaxTemperatureCheckbox">
+    <label for="graphDailyMaxTemperatureCheckbox">Daily maximum temperature</label>
+    <input type="checkbox" name="graphDataTypeCheckbox" id="graphDailyMinTemperatureCheckbox">
+    <label for="graphDailyMinTemperatureCheckbox">Daily minimum temperature</label>
+    <input type="checkbox" name="graphDataTypeCheckbox" id="graphDailyAverageTemperatureCheckbox">
+    <label for="graphDailyAverageTemperatureCheckbox">Daily average temperature</label>
+    <input type="checkbox" name="graphDataTypeCheckbox" id="graphHourlyTemperatureCheckbox">
+    <label for="graphHourlyTemperatureCheckbox">Hourly Temperature</label>
+    <button id="drawGraphsButton">Draw graphs</button>
+</div>
+<div id="weatherGraphWrapper">
+    <div id="graphTemperatureMarksBar">
+        <div id="graphTemperatureMarkDiv0"></div>
+        <div id="graphTemperatureMarkDiv1"></div>
+        <div id="graphTemperatureMarkDiv2"></div>
+        <div id="graphTemperatureMarkDiv3"></div>
+        <div id="graphTemperatureMarkDiv4"></div>
     </div>
+    <canvas id="weatherGraph">
+    </canvas>
 
+    <div id="graphDatesBar">
+        <div id="graphDateDiv0"></div>
+        <div id="graphDateDiv1"></div>
+        <div id="graphDateDiv2"></div>
+        <div id="graphDateDiv3"></div>
+        <div id="graphDateDiv4"></div>
+        <div id="graphDateDiv5"></div>
+        <div id="graphDateDiv6"></div>
+    </div>
+    <div id="graphDetailsBar">
+        <p id="graphDateDetails"></p>
+        <p id="graphTimeDetails"></p>
+        <p id="graphHourlyDetails"></p>
+        <p id="graphDailyMinDetails"></p>
+        <p id="graphDailyMaxDetails"></p>
+        <p id="graphDailyAverageDetails"></p>
+    </div>
+</div>
+
+
+<div id="weatherDisplay">
 
     <div id="currentWeatherDisplay">
         <div id="currentWeatherPictureDiv"></div>
@@ -321,6 +321,185 @@
                 <div class="forecastHourWindDescriptionDiv"></div>
                 <div class="forecastHourTemperatureDiv"></div>
             </div>
+        </div>
+    </div>
+
+</div>
+<div id="dayDetailsDisplay">
+    <div id="dayDetailsGeneralInfo">
+        <div class="dayDetailsGeneralDateDiv"></div>
+        <div class="dayDetailsGeneralTemperatureDiv"></div>
+        <div class="dayDetailsGeneralSunriseTimeDiv"></div>
+        <div class="dayDetailsGeneralSunsetTimeDiv"></div>
+    </div>
+    <div id="dayDetailsHours">
+        <div id="dayDetailsHourDiv0">
+            <div class="dayDetailsHourTimeDiv"></div>
+            <div class="dayDetailsHourPictureDiv"></div>
+            <div class="dayDetailsHourSkyDescriptionDiv"></div>
+            <div class="dayDetailsHourWindDescriptionDiv"></div>
+            <div class="dayDetailsHourTemperatureDiv"></div>
+        </div>
+        <div id="dayDetailsHourDiv1">
+            <div class="dayDetailsHourTimeDiv"></div>
+            <div class="dayDetailsHourPictureDiv"></div>
+            <div class="dayDetailsHourSkyDescriptionDiv"></div>
+            <div class="dayDetailsHourWindDescriptionDiv"></div>
+            <div class="dayDetailsHourTemperatureDiv"></div>
+        </div>
+        <div id="dayDetailsHourDiv2">
+            <div class="dayDetailsHourTimeDiv"></div>
+            <div class="dayDetailsHourPictureDiv"></div>
+            <div class="dayDetailsHourSkyDescriptionDiv"></div>
+            <div class="dayDetailsHourWindDescriptionDiv"></div>
+            <div class="dayDetailsHourTemperatureDiv"></div>
+        </div>
+        <div id="dayDetailsHourDiv3">
+            <div class="dayDetailsHourTimeDiv"></div>
+            <div class="dayDetailsHourPictureDiv"></div>
+            <div class="dayDetailsHourSkyDescriptionDiv"></div>
+            <div class="dayDetailsHourWindDescriptionDiv"></div>
+            <div class="dayDetailsHourTemperatureDiv"></div>
+        </div>
+        <div id="dayDetailsHourDiv4">
+            <div class="dayDetailsHourTimeDiv"></div>
+            <div class="dayDetailsHourPictureDiv"></div>
+            <div class="dayDetailsHourSkyDescriptionDiv"></div>
+            <div class="dayDetailsHourWindDescriptionDiv"></div>
+            <div class="dayDetailsHourTemperatureDiv"></div>
+        </div>
+        <div id="dayDetailsHourDiv5">
+            <div class="dayDetailsHourTimeDiv"></div>
+            <div class="dayDetailsHourPictureDiv"></div>
+            <div class="dayDetailsHourSkyDescriptionDiv"></div>
+            <div class="dayDetailsHourWindDescriptionDiv"></div>
+            <div class="dayDetailsHourTemperatureDiv"></div>
+        </div>
+        <div id="dayDetailsHourDiv6">
+            <div class="dayDetailsHourTimeDiv"></div>
+            <div class="dayDetailsHourPictureDiv"></div>
+            <div class="dayDetailsHourSkyDescriptionDiv"></div>
+            <div class="dayDetailsHourWindDescriptionDiv"></div>
+            <div class="dayDetailsHourTemperatureDiv"></div>
+        </div>
+        <div id="dayDetailsHourDiv7">
+            <div class="dayDetailsHourTimeDiv"></div>
+            <div class="dayDetailsHourPictureDiv"></div>
+            <div class="dayDetailsHourSkyDescriptionDiv"></div>
+            <div class="dayDetailsHourWindDescriptionDiv"></div>
+            <div class="dayDetailsHourTemperatureDiv"></div>
+        </div>
+        <div id="dayDetailsHourDiv8">
+            <div class="dayDetailsHourTimeDiv"></div>
+            <div class="dayDetailsHourPictureDiv"></div>
+            <div class="dayDetailsHourSkyDescriptionDiv"></div>
+            <div class="dayDetailsHourWindDescriptionDiv"></div>
+            <div class="dayDetailsHourTemperatureDiv"></div>
+        </div>
+        <div id="dayDetailsHourDiv9">
+            <div class="dayDetailsHourTimeDiv"></div>
+            <div class="dayDetailsHourPictureDiv"></div>
+            <div class="dayDetailsHourSkyDescriptionDiv"></div>
+            <div class="dayDetailsHourWindDescriptionDiv"></div>
+            <div class="dayDetailsHourTemperatureDiv"></div>
+        </div>
+        <div id="dayDetailsHourDiv10">
+            <div class="dayDetailsHourTimeDiv"></div>
+            <div class="dayDetailsHourPictureDiv"></div>
+            <div class="dayDetailsHourSkyDescriptionDiv"></div>
+            <div class="dayDetailsHourWindDescriptionDiv"></div>
+            <div class="dayDetailsHourTemperatureDiv"></div>
+        </div>
+        <div id="dayDetailsHourDiv11">
+            <div class="dayDetailsHourTimeDiv"></div>
+            <div class="dayDetailsHourPictureDiv"></div>
+            <div class="dayDetailsHourSkyDescriptionDiv"></div>
+            <div class="dayDetailsHourWindDescriptionDiv"></div>
+            <div class="dayDetailsHourTemperatureDiv"></div>
+        </div>
+        <div id="dayDetailsHourDiv12">
+            <div class="dayDetailsHourTimeDiv"></div>
+            <div class="dayDetailsHourPictureDiv"></div>
+            <div class="dayDetailsHourSkyDescriptionDiv"></div>
+            <div class="dayDetailsHourWindDescriptionDiv"></div>
+            <div class="dayDetailsHourTemperatureDiv"></div>
+        </div>
+        <div id="dayDetailsHourDiv13">
+            <div class="dayDetailsHourTimeDiv"></div>
+            <div class="dayDetailsHourPictureDiv"></div>
+            <div class="dayDetailsHourSkyDescriptionDiv"></div>
+            <div class="dayDetailsHourWindDescriptionDiv"></div>
+            <div class="dayDetailsHourTemperatureDiv"></div>
+        </div>
+        <div id="dayDetailsHourDiv14">
+            <div class="dayDetailsHourTimeDiv"></div>
+            <div class="dayDetailsHourPictureDiv"></div>
+            <div class="dayDetailsHourSkyDescriptionDiv"></div>
+            <div class="dayDetailsHourWindDescriptionDiv"></div>
+            <div class="dayDetailsHourTemperatureDiv"></div>
+        </div>
+        <div id="dayDetailsHourDiv15">
+            <div class="dayDetailsHourTimeDiv"></div>
+            <div class="dayDetailsHourPictureDiv"></div>
+            <div class="dayDetailsHourSkyDescriptionDiv"></div>
+            <div class="dayDetailsHourWindDescriptionDiv"></div>
+            <div class="dayDetailsHourTemperatureDiv"></div>
+        </div>
+        <div id="dayDetailsHourDiv16">
+            <div class="dayDetailsHourTimeDiv"></div>
+            <div class="dayDetailsHourPictureDiv"></div>
+            <div class="dayDetailsHourSkyDescriptionDiv"></div>
+            <div class="dayDetailsHourWindDescriptionDiv"></div>
+            <div class="dayDetailsHourTemperatureDiv"></div>
+        </div>
+        <div id="dayDetailsHourDiv17">
+            <div class="dayDetailsHourTimeDiv"></div>
+            <div class="dayDetailsHourPictureDiv"></div>
+            <div class="dayDetailsHourSkyDescriptionDiv"></div>
+            <div class="dayDetailsHourWindDescriptionDiv"></div>
+            <div class="dayDetailsHourTemperatureDiv"></div>
+        </div>
+        <div id="dayDetailsHourDiv18">
+            <div class="dayDetailsHourTimeDiv"></div>
+            <div class="dayDetailsHourPictureDiv"></div>
+            <div class="dayDetailsHourSkyDescriptionDiv"></div>
+            <div class="dayDetailsHourWindDescriptionDiv"></div>
+            <div class="dayDetailsHourTemperatureDiv"></div>
+        </div>
+        <div id="dayDetailsHourDiv19">
+            <div class="dayDetailsHourTimeDiv"></div>
+            <div class="dayDetailsHourPictureDiv"></div>
+            <div class="dayDetailsHourSkyDescriptionDiv"></div>
+            <div class="dayDetailsHourWindDescriptionDiv"></div>
+            <div class="dayDetailsHourTemperatureDiv"></div>
+        </div>
+        <div id="dayDetailsHourDiv20">
+            <div class="dayDetailsHourTimeDiv"></div>
+            <div class="dayDetailsHourPictureDiv"></div>
+            <div class="dayDetailsHourSkyDescriptionDiv"></div>
+            <div class="dayDetailsHourWindDescriptionDiv"></div>
+            <div class="dayDetailsHourTemperatureDiv"></div>
+        </div>
+        <div id="dayDetailsHourDiv21">
+            <div class="dayDetailsHourTimeDiv"></div>
+            <div class="dayDetailsHourPictureDiv"></div>
+            <div class="dayDetailsHourSkyDescriptionDiv"></div>
+            <div class="dayDetailsHourWindDescriptionDiv"></div>
+            <div class="dayDetailsHourTemperatureDiv"></div>
+        </div>
+        <div id="dayDetailsHourDiv22">
+            <div class="dayDetailsHourTimeDiv"></div>
+            <div class="dayDetailsHourPictureDiv"></div>
+            <div class="dayDetailsHourSkyDescriptionDiv"></div>
+            <div class="dayDetailsHourWindDescriptionDiv"></div>
+            <div class="dayDetailsHourTemperatureDiv"></div>
+        </div>
+        <div id="dayDetailsHourDiv23">
+            <div class="dayDetailsHourTimeDiv"></div>
+            <div class="dayDetailsHourPictureDiv"></div>
+            <div class="dayDetailsHourSkyDescriptionDiv"></div>
+            <div class="dayDetailsHourWindDescriptionDiv"></div>
+            <div class="dayDetailsHourTemperatureDiv"></div>
         </div>
     </div>
 

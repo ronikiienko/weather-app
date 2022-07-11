@@ -7,7 +7,7 @@ import {renderAllWeather, renderCurrentTime, renderMyPosition} from './renderer'
 import {
     detectPosition,
     findCheckedRadioForName,
-    getDayInfoForDate,
+    getDayInfoStringForArrNum,
     getPositionByCity,
     handleCheckedGraphCheckboxesForDetails,
     setGraphSwitchesData,
@@ -15,16 +15,18 @@ import {
 } from './utils';
 import {
     canvas,
-    canvasHeight,
     canvasWidth,
     chooseCityInput,
     chooseDegreeUnitsRadios,
     citySuggestions,
     detectPositionButton,
+    drawGraphsButton,
     graphCheckboxes,
     graphDetailsBar,
+    interval,
     updateCanvasDimensions,
     updateWeatherButton,
+    weatherForecastDisplay,
 } from './variables';
 
 
@@ -98,17 +100,19 @@ storageChangedEmitter(window.localStorage, {
 });
 window.addEventListener('storageChanged', async (event) => {
     if (event.detail.value) {
-        if (event.detail.key === 'checkedGraphDataTypeCheckboxes') {
-            drawGraphs();
-        } else {
+        if (event.detail.key !== 'checkedGraphDataTypeCheckboxes') {
             renderAllWeather();
             renderCurrentTime();
             drawGraphs();
-
         }
     }
 });
-
+drawGraphsButton.addEventListener('click', () => {
+    drawGraphs()
+        .catch(() => {
+            console.log('suzuki');
+        });
+});
 
 for (let graphCheckbox of graphCheckboxes) {
     graphCheckbox.addEventListener('change', () => {
@@ -171,37 +175,17 @@ canvas.addEventListener('mousemove', (event) => {
         fillInfo.detailDivToFill.textContent = `${fillInfo.dataName}${fillInfo.dataToFill[arrayNumberFromRatio]}°`;
         document.getElementById('graphTimeDetails').textContent = weather.hourly.time[arrayHourNumberFromRatio].slice(11, 16);
 
-
-        const graphDayInfo = getDayInfoForDate(weather.daily.time[arrayDateNumberFromRatio]);
-        let graphDayInfoString;
-        if (arrayDateNumberFromRatio === 0) {
-            graphDayInfoString = 'Today';
-        } else if (arrayDateNumberFromRatio === 1) {
-            graphDayInfoString = 'Tomorrow';
-        } else {
-            graphDayInfoString = `${graphDayInfo.dayOfWeekShort}, ${graphDayInfo.monthShort} ${graphDayInfo.dayOfMonth}`;
-        }
-        document.getElementById('graphDateDetails').textContent = graphDayInfoString;
-
+        document.getElementById('graphDateDetails').textContent = getDayInfoStringForArrNum(weather, arrayDateNumberFromRatio, true);
     }
 
 
     const graphDetailsBarWidth = graphDetailsBar.offsetWidth;
     const graphDetailsBarHeight = graphDetailsBar.offsetHeight;
     if (offsetFromCanvasX >= canvasWidth - graphDetailsBarWidth * 4) {
-        if (offsetFromCanvasY >= canvasHeight - graphDetailsBarHeight) {
-            graphDetailsBar.style.top = `${event.pageY - graphDetailsBarHeight}px`;
-        } else {
-            graphDetailsBar.style.top = `${event.pageY + 10}px`;
-        }
-
+        graphDetailsBar.style.top = `${event.pageY + 10}px`;
         graphDetailsBar.style.left = `${event.pageX - 10 - graphDetailsBarWidth}px`;
     } else {
-        if (offsetFromCanvasY >= canvasHeight - graphDetailsBarHeight / 2) {
-            graphDetailsBar.style.top = `${event.pageY - graphDetailsBarHeight}px`;
-        } else {
-            graphDetailsBar.style.top = `${event.pageY + 10}px`;
-        }
+        graphDetailsBar.style.top = `${event.pageY + 10}px`;
         graphDetailsBar.style.left = `${event.pageX + 10}px`;
     }
 
@@ -211,14 +195,22 @@ canvas.addEventListener('mousemove', (event) => {
 canvas.addEventListener('mouseleave', () => {
     graphDetailsBar.style.display = 'none';
 });
-/*window.addEventListener('resize', () => {
-    drawGraphs();
-});*/
 
-document.getElementById('updateCanvasDimensions').addEventListener('click', () => {
-    updateCanvasDimensions();
-    drawGraphs();
+window.addEventListener('resize', () => {
+    clearTimeout(interval);
+    interval = setTimeout(() => {
+        updateCanvasDimensions();
+        drawGraphs();
+    }, 200);
 });
+
+weatherForecastDisplay.addEventListener('click', (event) => {
+    event.stopPropagation();
+    console.log(event.target);
+});
+
+
+
 
 
 

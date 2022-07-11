@@ -2,6 +2,7 @@ import {
     averageFromTwoArrays,
     disableEnableGraphCheckboxes,
     getDayInfoForDate,
+    getMaxMinWeeklyTemperature,
     getWeatherByPosition,
     wait,
 } from './utils';
@@ -46,19 +47,7 @@ function handleGraphCheckboxesToDraw(checkedGraphDataTypeCheckbox, weather) {
     return dataToDrawInfo;
 }
 
-function getMaxMinWeeklyTemperature(weather) {
-    const min = Math.min(...weather.daily.temperature_2m_min);
-    const max = Math.max(...weather.daily.temperature_2m_max);
-    const avg = Number(((min + max) / 2).toFixed(1));
-    let data = {
-        min: min,
-        max: max,
-        avg: avg,
-        avgHigher: Number(((max + avg) / 2).toFixed(1)),
-        avgLower: Number(((min + avg) / 2).toFixed(1)),
-    };
-    return data;
-}
+
 
 function drawGraphDates(weather) {
     const graphDateDivs = graphDatesBar.children;
@@ -141,7 +130,5 @@ export async function drawGraphs() {
 
 }
 
-// TODO disable graphCheckboxes while graphs are being drawed
-// TODO fix opacity problems on daily graphs
-// TODO crossed lines in place of coursor
-// TODO degrees left from graph and time below graph
+// TODO why graph first dayily's are not transparent
+// TODO resize event not draw graph when one already is in process

@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import weatherIcons from './images/pack1svg/*.svg';
-import {graphCheckboxes} from './variables';
+import {detectPositionButton, drawGraphsButton, graphCheckboxes} from './variables';
 
 
 export let weather;
@@ -41,6 +41,15 @@ export function getWeatherByPosition(position) {
 export function getCurrentTimeOfDay(timeZone) {
     const currentHour = dayjs.tz(dayjs(), timeZone).$H;
     if (currentHour < 7 && currentHour >= 0 || currentHour === 23) {
+        return 'night';
+    } else {
+        return 'day';
+    }
+}
+
+export function getTimeOfDayForHour(time) {
+    const hour = Number(time.slice(0, 2));
+    if (hour < 7 && hour >= 0 || hour === 23) {
         return 'night';
     } else {
         return 'day';
@@ -370,6 +379,37 @@ export function handleWindspeed(windspeed) {
     return windspeedInfo;
 }
 
+export function getDayInfoStringForArrNum(weather, i, shortOrFull) {
+    const dayInfo = getDayInfoForDate(weather.daily.time[i]);
+    let forecastDayInfoString;
+    if (i === 0) {
+        forecastDayInfoString = 'Today';
+    } else if (i === 1) {
+        forecastDayInfoString = 'Tomorrow';
+    } else {
+        if (shortOrFull) {
+            forecastDayInfoString = `${dayInfo.dayOfWeekShort}, ${dayInfo.monthShort} ${dayInfo.dayOfMonth}`;
+        } else {
+            forecastDayInfoString = `${dayInfo.dayOfWeek}, ${dayInfo.month} ${dayInfo.dayOfMonth}`;
+        }
+    }
+    return forecastDayInfoString;
+}
+
+export function getMaxMinWeeklyTemperature(weather) {
+    const min = Math.min(...weather.daily.temperature_2m_min);
+    const max = Math.max(...weather.daily.temperature_2m_max);
+    const avg = Number(((min + max) / 2).toFixed(1));
+    let data = {
+        min: min,
+        max: max,
+        avg: avg,
+        avgHigher: Number(((max + avg) / 2).toFixed(1)),
+        avgLower: Number(((min + avg) / 2).toFixed(1)),
+    };
+    return data;
+}
+
 export function findCheckedRadioForName(name) {
     const inputs = name;
     for (let input of inputs) {
@@ -444,14 +484,16 @@ export function handleCheckedGraphCheckboxesForDetails(checkboxId) {
     return graphDetailBarToFillInfo;
 }
 
+function checkIfDisabled(input) {
+    return input.disabled;
+}
+
 export function disableEnableGraphCheckboxes() {
     for (let graphCheckbox of graphCheckboxes) {
-        if (graphCheckbox.disabled === false) {
-            graphCheckbox.disabled = true;
-        } else {
-            graphCheckbox.disabled = false;
-        }
-
+        graphCheckbox.disabled = !checkIfDisabled(graphCheckbox);
     }
+    drawGraphsButton.disabled = !checkIfDisabled(drawGraphsButton);
+    detectPositionButton.disabled = !checkIfDisabled(detectPositionButton);
+
 
 }

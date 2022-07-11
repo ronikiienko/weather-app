@@ -15,6 +15,7 @@ export const currentTime = document.getElementById('currentTime');
 export const currentDate = document.getElementById('currentDate');
 
 export let graphCheckboxes = document.querySelectorAll('input[name=graphDataTypeCheckbox]');
+export let drawGraphsButton = document.getElementById('drawGraphsButton');
 
 
 export const weatherForecastDayDiv = document.querySelectorAll('weatherForecastDayDiv');
@@ -29,13 +30,13 @@ export const canvas = document.getElementById('weatherGraph');
 export const ctx = canvas.getContext('2d');
 
 export const graphTemperatureMarksBar = document.getElementById('graphTemperatureMarksBar');
-export let canvasWidth = canvas.width = window.innerWidth - graphTemperatureMarksBar.offsetWidth;
-export let canvasHeight = canvas.height = window.innerHeight / 3;
+export let canvasWidth = canvas.width = document.body.offsetWidth - graphTemperatureMarksBar.offsetWidth;
+export let canvasHeight = canvas.height = 350;
 export let canvasHeightWithBorders = canvasHeight - 40;
 
 export function updateCanvasDimensions() {
-    canvasWidth = canvas.width = window.innerWidth - graphTemperatureMarksBar.offsetWidth;
-    canvasHeight = canvas.height = window.innerHeight / 3;
+    canvasWidth = canvas.width = document.body.offsetWidth - graphTemperatureMarksBar.offsetWidth;
+    canvasHeight = canvas.height = 350;
     canvasHeightWithBorders = canvasHeight - 40;
 
 }
@@ -43,3 +44,6 @@ export function updateCanvasDimensions() {
 export const canvasWrapper = document.getElementById('canvasWrapper');
 export const graphDetailsBar = document.getElementById('graphDetailsBar');
 export const graphDatesBar = document.getElementById('graphDatesBar');
+
+export let interval;
+

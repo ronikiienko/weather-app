@@ -1,7 +1,8 @@
 import dayjs from 'dayjs';
 import {
     getCurrentTimeOfDay,
-    getDayInfoForDate,
+    getDayInfoStringForArrNum,
+    getTimeOfDayForHour,
     getWeatherByPosition,
     handleWeathercode,
     handleWindspeed,
@@ -19,6 +20,12 @@ import {
 } from './variables';
 
 
+function drawPictureBySrc(whereToAppend, src) {
+    const image = document.createElement('img');
+    image.src = src;
+    whereToAppend.appendChild(image);
+}
+
 function renderCurrentWeather(weather, position) {
     const currentWeather = weather.current_weather;
     currentWeatherPictureDiv.textContent = '';
@@ -32,25 +39,15 @@ function renderCurrentWeather(weather, position) {
     currentSunsetTimeDiv.textContent = `${weather.daily.sunset[0].slice(11, 16)}`;
     currentWindSpeedDiv.textContent = `Wind: ${handleWindspeed(currentWeather.windspeed).windspeedName}`;
     currentWindSpeedDiv.title = `${handleWindspeed(currentWeather.windspeed).windspeedDescription}`;
-    const currentWeatherPicture = currentWeatherPictureDiv.appendChild(image);
-    currentWeatherPicture.src = handleWeathercode(currentWeathercode, getCurrentTimeOfDay(position.timeZone)).image;
+    drawPictureBySrc(currentWeatherPictureDiv, handleWeathercode(currentWeathercode, getCurrentTimeOfDay(position.timeZone)).image);
 
 }
 
-function timeOfDayByI(i) {
-    let timeOfDay;
-    if (i === 0 || i === 3) {
-        timeOfDay = 'night';
-    } else {
-        timeOfDay = 'day';
-    }
-    return timeOfDay;
-}
 
-function getTimeByI(i) {
+function getTimeByIForecast(i) {
     let time;
     if (i === 0) {
-        time = '4:00';
+        time = '04:00';
     } else if (i === 1) {
         time = '10:00';
     } else if (i === 2) {
@@ -83,20 +80,12 @@ function getHourDataTypeByI(i, I, weather, dataType) {
 
 }
 
+
 function renderForecast(weather) {
     for (let forecastPic of document.querySelectorAll('.forecastHourPictureDiv')) {
         forecastPic.textContent = '';
     }
     for (let I = 0; I < 7; I++) {
-        const forecastDayInfo = getDayInfoForDate(weather.daily.time[I]);
-        /*let date;
-        if (I === 0) {
-            date = 'Today';
-        } else if (I === 1) {
-            date = 'Tomorrow';
-        } else {
-            date = weather.daily.time[I];
-        }*/
 
 
         const weatherForecastDay = document.getElementById(`forecast${I}`);
@@ -108,15 +97,7 @@ function renderForecast(weather) {
 
 
         forecastDayGeneralTemperatureDiv.textContent = `${weather.daily.temperature_2m_min[I]}° / ${weather.daily.temperature_2m_max[I]}°`;
-        let forecastDayInfoString;
-        if (I === 0) {
-            forecastDayInfoString = 'Today';
-        } else if (I === 1) {
-            forecastDayInfoString = 'Tomorrow';
-        } else {
-            forecastDayInfoString = `${forecastDayInfo.dayOfWeek}, ${forecastDayInfo.month} ${forecastDayInfo.dayOfMonth}`;
-        }
-        forecastDayGeneralDateDiv.textContent = forecastDayInfoString;
+        forecastDayGeneralDateDiv.textContent = getDayInfoStringForArrNum(weather, I);
         forecastDayGeneralSunriseTimeDiv.textContent = `${weather.daily.sunrise[I].slice(11, 16)}`;
         forecastDayGeneralSunsetTimeDiv.textContent = `${weather.daily.sunset[I].slice(11, 16)}`;
 
@@ -131,14 +112,12 @@ function renderForecast(weather) {
             const forecastHourSkyDescriptionDiv = weatherForecastHour.querySelector('.forecastHourSkyDescriptionDiv');
 
 
-            forecastHourTimeDiv.textContent = getTimeByI(i);
+            forecastHourTimeDiv.textContent = getTimeByIForecast(i);
             forecastHourTemperatureDiv.textContent = `Temperature: ${getHourDataTypeByI(i, I, weather, 'temperature_2m')}°`;
-            const image = document.createElement('img');
-            const forecastHourPicture = forecastHourPictureDiv.appendChild(image);
-            forecastHourPicture.src = handleWeathercode(getHourDataTypeByI(i, I, weather, 'weathercode'), timeOfDayByI(i)).image;
             forecastHourSkyDescriptionDiv.textContent = `${handleWeathercode(getHourDataTypeByI(i, I, weather, 'weathercode')).message}`;
-
             forecastHourWindDescriptionDiv.textContent = `${handleWindspeed(getHourDataTypeByI(i, I, weather, 'windspeed_10m')).windspeedName}`;
+
+            drawPictureBySrc(forecastHourPictureDiv, handleWeathercode(getHourDataTypeByI(i, I, weather, 'weathercode'), getTimeOfDayForHour(getTimeByIForecast(i))).image);
         }
 
     }
@@ -148,11 +127,55 @@ export function renderAllWeather() {
     const position = JSON.parse(localStorage.getItem('position'));
     getWeatherByPosition(position)
         .then((weather) => {
+            toggleDayDetailsView(weather, 0);
             renderCurrentWeather(weather, position);
             renderForecast(weather);
             renderMyPosition();
         });
 
+}
+
+function renderDayDetails(weather, dayNumberInArray) {
+    const dayDetailsGeneralDateDiv = document.querySelector('.dayDetailsGeneralDateDiv');
+    const dayDetailsGeneralTemperatureDiv = document.querySelector('.dayDetailsGeneralTemperatureDiv');
+    const dayDetailsGeneralSunriseTimeDiv = document.querySelector('.dayDetailsGeneralSunriseTimeDiv');
+    const dayDetailsGeneralSunsetTimeDiv = document.querySelector('.dayDetailsGeneralSunsetTimeDiv');
+    console.log(dayDetailsGeneralDateDiv);
+    dayDetailsGeneralDateDiv.textContent = getDayInfoStringForArrNum(weather, dayNumberInArray);
+
+    for (let i = 0; i < 24; i++) {
+        const dayDetailsHourDiv = document.getElementById(`dayDetailsHourDiv${i}`);
+
+        const dayDetailsHourTimeDiv = dayDetailsHourDiv.querySelector('.dayDetailsHourTimeDiv');
+        const dayDetailsHourPictureDiv = dayDetailsHourDiv.querySelector('.dayDetailsHourPictureDiv');
+        const dayDetailsHourSkyDescriptionDiv = dayDetailsHourDiv.querySelector('.dayDetailsHourSkyDescriptionDiv');
+        const dayDetailsHourWindDescriptionDiv = dayDetailsHourDiv.querySelector('.dayDetailsHourWindDescriptionDiv');
+        const dayDetailsHourTemperatureDiv = dayDetailsHourDiv.querySelector('.dayDetailsHourTemperatureDiv');
+
+        const time = weather.hourly.time[i].slice(11, 16);
+        const timeOfDay = getTimeOfDayForHour(time);
+
+        const weathercodeData = handleWeathercode(weather.hourly.weathercode[i], timeOfDay);
+        console.log(weather);
+
+        dayDetailsHourTemperatureDiv.textContent = weather.hourly.temperature_2m[24 * dayNumberInArray - 1 + i];
+        dayDetailsHourSkyDescriptionDiv.textContent = weathercodeData.message;
+        dayDetailsHourTimeDiv.textContent = time;
+
+
+        dayDetailsHourWindDescriptionDiv.textContent = handleWindspeed(weather.hourly.windspeed_10m[i]).windspeedName;
+        drawPictureBySrc(dayDetailsHourPictureDiv, weathercodeData.image);
+    }
+}
+
+
+export function toggleDayDetailsView(weather, dayNumberInArray) {
+    const dayDetailsHours = document.getElementById('dayDetailsHours');
+    dayDetailsHours.classList.toggle('hidden');
+    if (dayDetailsHours.classList.contains('hidden')) {
+        return;
+    }
+    renderDayDetails(weather, dayNumberInArray);
 }
 
 export function renderCurrentTime() {
