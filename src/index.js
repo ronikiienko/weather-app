@@ -3,7 +3,7 @@ import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import storageChangedEmitter from 'storage-changed';
 import {drawGraphs} from './graphDrawer';
-import {renderAllWeather, renderCurrentTime, renderMyPosition} from './renderer';
+import {closeDayDetails, openDayDetails, renderAllWeather, renderCurrentTime, renderMyPosition} from './renderer';
 import {
     detectPosition,
     findCheckedRadioForName,
@@ -19,11 +19,11 @@ import {
     chooseCityInput,
     chooseDegreeUnitsRadios,
     citySuggestions,
+    closeButton,
     detectPositionButton,
     drawGraphsButton,
     graphCheckboxes,
     graphDetailsBar,
-    interval,
     updateCanvasDimensions,
     updateWeatherButton,
     weatherForecastDisplay,
@@ -110,7 +110,7 @@ window.addEventListener('storageChanged', async (event) => {
 drawGraphsButton.addEventListener('click', () => {
     drawGraphs()
         .catch(() => {
-            console.log('suzuki');
+            console.log('interval');
         });
 });
 
@@ -153,11 +153,30 @@ window.setInterval(function () {
 
 // graphDetailsBar.style.display = 'none';
 
+function handleOffsetFromCanvas(offsetX, arrayLength) {
+    const offsetFromCanvasX = offsetX;
 
+    let mouseMoveOffsetRatio = offsetFromCanvasX / canvasWidth;
+    let data;
+    if (arrayLength) {
+        data = {
+            numberInDailyArr: Math.floor(7 * mouseMoveOffsetRatio),
+            numberInHourlyArr: Math.floor(168 * mouseMoveOffsetRatio),
+            numberInGivenArr: Math.floor(arrayLength * mouseMoveOffsetRatio),
+        };
+    } else {
+        data = {
+            numberInDailyArr: Math.floor(7 * mouseMoveOffsetRatio),
+            numberInHourlyArr: Math.floor(168 * mouseMoveOffsetRatio),
+        };
+    }
+
+    return data;
+}
 canvas.addEventListener('mousemove', (event) => {
-    const offsetFromCanvasY = event.offsetY;
-    const offsetFromCanvasX = event.offsetX;
 
+    const offsetFromCanvasX = event.offsetX;
+    const arrNumbers = handleOffsetFromCanvas(offsetFromCanvasX);
     graphDetailsBar.style.display = 'block';
     if (!weather || event.offsetX < 10) {
         return;
@@ -166,16 +185,16 @@ canvas.addEventListener('mousemove', (event) => {
     const checkedGraphDataTypeCheckboxes = JSON.parse(localStorage.getItem('checkedGraphDataTypeCheckboxes'));
     let fillInfo;
     let mouseMoveOffsetRatio = offsetFromCanvasX / canvasWidth;
+    let arrayDateNumberFromRatio = arrNumbers.numberInDailyArr;
+    let arrayHourNumberFromRatio = arrNumbers.numberInHourlyArr;
+    document.getElementById('graphTimeDetails').textContent = weather.hourly.time[arrayHourNumberFromRatio].slice(11, 16);
+    document.getElementById('graphDateDetails').textContent = getDayInfoStringForArrNum(weather, arrayDateNumberFromRatio, true);
+
     for (let checkedGraphDataTypeCheckbox of checkedGraphDataTypeCheckboxes) {
         fillInfo = handleCheckedGraphCheckboxesForDetails(checkedGraphDataTypeCheckbox);
         let graphDataArrayLength = fillInfo.dataToFill.length;
-        let arrayNumberFromRatio = Math.floor(graphDataArrayLength * mouseMoveOffsetRatio);
-        let arrayDateNumberFromRatio = Math.floor(7 * mouseMoveOffsetRatio);
-        let arrayHourNumberFromRatio = Math.floor(168 * mouseMoveOffsetRatio);
+        let arrayNumberFromRatio = handleOffsetFromCanvas(offsetFromCanvasX, graphDataArrayLength).numberInGivenArr;
         fillInfo.detailDivToFill.textContent = `${fillInfo.dataName}${fillInfo.dataToFill[arrayNumberFromRatio]}°`;
-        document.getElementById('graphTimeDetails').textContent = weather.hourly.time[arrayHourNumberFromRatio].slice(11, 16);
-
-        document.getElementById('graphDateDetails').textContent = getDayInfoStringForArrNum(weather, arrayDateNumberFromRatio, true);
     }
 
 
@@ -191,22 +210,51 @@ canvas.addEventListener('mousemove', (event) => {
 
 
 });
-// TODO finish pointer graph details, make open day details on click
+
 canvas.addEventListener('mouseleave', () => {
     graphDetailsBar.style.display = 'none';
 });
 
+canvas.addEventListener('click', (event) => {
+    let arrNumbers = handleOffsetFromCanvas(event.offsetX);
+    openDayDetails(weather, arrNumbers.numberInDailyArr);
+});
+
+let interval;
 window.addEventListener('resize', () => {
     clearTimeout(interval);
     interval = setTimeout(() => {
+        console.log('interval hello)');
         updateCanvasDimensions();
         drawGraphs();
-    }, 200);
+    }, 500);
+
 });
 
+
 weatherForecastDisplay.addEventListener('click', (event) => {
-    event.stopPropagation();
-    console.log(event.target);
+    let target = event.target;
+
+    function goNodeUp() {
+        target = target.parentElement;
+        if (!target.classList.contains('weatherForecastDayDiv')) {
+            goNodeUp();
+        } else {
+            openDayDetails(weather, target.id[8]);
+            console.log(target.id);
+        }
+    }
+
+    goNodeUp();
+});
+window.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+        closeDayDetails();
+    }
+});
+
+closeButton.addEventListener('click', () => {
+    closeDayDetails();
 });
 
 

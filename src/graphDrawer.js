@@ -121,7 +121,6 @@ export async function drawGraphs() {
     drawGraphTemperatureMarks(weather);
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
     const checkedGraphCheckboxesIds = JSON.parse(localStorage.getItem('checkedGraphDataTypeCheckboxes'));
-
     for (let checkedGraphCheckboxId of checkedGraphCheckboxesIds) {
         await drawGraphByDataType(checkedGraphCheckboxId, weather);
 

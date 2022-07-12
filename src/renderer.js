@@ -8,6 +8,7 @@ import {
     handleWindspeed,
 } from './utils';
 import {
+    closeButton,
     currentDate,
     currentSunriseTimeDiv,
     currentSunsetTimeDiv,
@@ -16,7 +17,9 @@ import {
     currentWeatherDescriptionDiv,
     currentWeatherPictureDiv,
     currentWindSpeedDiv,
+    dayDetailsDisplay,
     myPositionDisplay,
+    overlayMask,
 } from './variables';
 
 
@@ -127,7 +130,6 @@ export function renderAllWeather() {
     const position = JSON.parse(localStorage.getItem('position'));
     getWeatherByPosition(position)
         .then((weather) => {
-            toggleDayDetailsView(weather, 0);
             renderCurrentWeather(weather, position);
             renderForecast(weather);
             renderMyPosition();
@@ -144,6 +146,9 @@ function renderDayDetails(weather, dayNumberInArray) {
     dayDetailsGeneralDateDiv.textContent = getDayInfoStringForArrNum(weather, dayNumberInArray);
 
     for (let i = 0; i < 24; i++) {
+
+        const numberInHourlyArray = 24 * dayNumberInArray + i;
+
         const dayDetailsHourDiv = document.getElementById(`dayDetailsHourDiv${i}`);
 
         const dayDetailsHourTimeDiv = dayDetailsHourDiv.querySelector('.dayDetailsHourTimeDiv');
@@ -152,31 +157,45 @@ function renderDayDetails(weather, dayNumberInArray) {
         const dayDetailsHourWindDescriptionDiv = dayDetailsHourDiv.querySelector('.dayDetailsHourWindDescriptionDiv');
         const dayDetailsHourTemperatureDiv = dayDetailsHourDiv.querySelector('.dayDetailsHourTemperatureDiv');
 
+        dayDetailsHourPictureDiv.textContent = '';
+
         const time = weather.hourly.time[i].slice(11, 16);
         const timeOfDay = getTimeOfDayForHour(time);
 
-        const weathercodeData = handleWeathercode(weather.hourly.weathercode[i], timeOfDay);
-        console.log(weather);
+        const weathercodeData = handleWeathercode(weather.hourly.weathercode[numberInHourlyArray], timeOfDay);
 
-        dayDetailsHourTemperatureDiv.textContent = weather.hourly.temperature_2m[24 * dayNumberInArray - 1 + i];
+        dayDetailsHourTemperatureDiv.textContent = weather.hourly.temperature_2m[numberInHourlyArray];
         dayDetailsHourSkyDescriptionDiv.textContent = weathercodeData.message;
         dayDetailsHourTimeDiv.textContent = time;
 
 
-        dayDetailsHourWindDescriptionDiv.textContent = handleWindspeed(weather.hourly.windspeed_10m[i]).windspeedName;
+        dayDetailsHourWindDescriptionDiv.textContent = handleWindspeed(weather.hourly.windspeed_10m[numberInHourlyArray]).windspeedName;
         drawPictureBySrc(dayDetailsHourPictureDiv, weathercodeData.image);
     }
 }
 
-
-export function toggleDayDetailsView(weather, dayNumberInArray) {
-    const dayDetailsHours = document.getElementById('dayDetailsHours');
-    dayDetailsHours.classList.toggle('hidden');
-    if (dayDetailsHours.classList.contains('hidden')) {
-        return;
+function showOrHide(element, hideOrShow) {
+    const hiddenOrNot = element.classList.contains('hidden');
+    if (hideOrShow === 'hide' && !hiddenOrNot) {
+        element.classList.add('hidden');
+    } else if (hideOrShow === 'show' && hiddenOrNot) {
+        element.classList.remove('hidden');
     }
+}
+
+export function openDayDetails(weather, dayNumberInArray) {
+    showOrHide(dayDetailsDisplay, 'show');
+    showOrHide(overlayMask, 'show');
+    showOrHide(closeButton, 'show');
     renderDayDetails(weather, dayNumberInArray);
 }
+
+export function closeDayDetails() {
+    showOrHide(dayDetailsDisplay, 'hide');
+    showOrHide(overlayMask, 'hide');
+    showOrHide(closeButton, 'hide');
+}
+
 
 export function renderCurrentTime() {
     let position = JSON.parse(window.localStorage.getItem('position'));

@@ -36,7 +36,7 @@ export let canvasHeightWithBorders = canvasHeight - 40;
 
 export function updateCanvasDimensions() {
     canvasWidth = canvas.width = document.body.offsetWidth - graphTemperatureMarksBar.offsetWidth;
-    canvasHeight = canvas.height = 350;
+    canvasHeight = canvas.height = 200 + window.innerHeight / 5;
     canvasHeightWithBorders = canvasHeight - 40;
 
 }
@@ -45,5 +45,10 @@ export const canvasWrapper = document.getElementById('canvasWrapper');
 export const graphDetailsBar = document.getElementById('graphDetailsBar');
 export const graphDatesBar = document.getElementById('graphDatesBar');
 
-export let interval;
+// export let interval;
+
+export const overlayMask = document.getElementById('overlayMask');
+export const closeButton = document.getElementById('closeButton');
+
+export const dayDetailsDisplay = document.getElementById('dayDetailsDisplay');
 
