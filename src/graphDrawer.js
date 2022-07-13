@@ -23,12 +23,12 @@ function handleGraphCheckboxesToDraw(checkedGraphDataTypeCheckbox, weather) {
     if (checkedGraphDataTypeCheckbox === 'graphDailyMaxTemperatureCheckbox') {
         dataToDrawInfo = {
             data: weather.daily.temperature_2m_max,
-            color: 'rgba(255,0,0,0.3)',
+            color: 'rgba(255,0,0)',
         };
     } else if (checkedGraphDataTypeCheckbox === 'graphDailyMinTemperatureCheckbox') {
         dataToDrawInfo = {
             data: weather.daily.temperature_2m_min,
-            color: 'rgba(0,0,255,0.3)',
+            color: 'rgba(0,0,255)',
         };
     } else if (checkedGraphDataTypeCheckbox === 'graphDailyAverageTemperatureCheckbox') {
         const arr1 = weather.daily.temperature_2m_min;
@@ -36,7 +36,7 @@ function handleGraphCheckboxesToDraw(checkedGraphDataTypeCheckbox, weather) {
         let arrData = averageFromTwoArrays(arr1, arr2);
         dataToDrawInfo = {
             data: arrData,
-            color: 'rgba(255,255,0,0.3)',
+            color: 'rgba(255,255,0)',
         };
     } else if (checkedGraphDataTypeCheckbox === 'graphHourlyTemperatureCheckbox') {
         dataToDrawInfo = {
@@ -108,13 +108,15 @@ async function drawGraphByDataType(checkedGraphDataTypeCheckbox, weather) {
         await wait(1);
 
         ctx.stroke();
+        console.log('a');
     }
     ctx.moveTo(0, 0);
     ctx.closePath();
 }
 
+export let isDrawing;
 export async function drawGraphs() {
-
+    isDrawing = true;
     disableEnableGraphCheckboxes();
     const weather = await getWeatherByPosition(JSON.parse(localStorage.getItem('position')));
     drawGraphDates(weather);
@@ -126,7 +128,7 @@ export async function drawGraphs() {
 
     }
     disableEnableGraphCheckboxes();
-
+    isDrawing = false;
 }
 
 // TODO why graph first dayily's are not transparent

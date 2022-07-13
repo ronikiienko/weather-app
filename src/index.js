@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import storageChangedEmitter from 'storage-changed';
-import {drawGraphs} from './graphDrawer';
+import {drawGraphs, isDrawing} from './graphDrawer';
 import {closeDayDetails, openDayDetails, renderAllWeather, renderCurrentTime, renderMyPosition} from './renderer';
 import {
     detectPosition,
@@ -223,11 +223,15 @@ canvas.addEventListener('click', (event) => {
 let interval;
 window.addEventListener('resize', () => {
     clearTimeout(interval);
+    if (isDrawing) {
+        clearTimeout();
+    }
     interval = setTimeout(() => {
         console.log('interval hello)');
         updateCanvasDimensions();
         drawGraphs();
-    }, 500);
+
+    }, 1000);
 
 });
 
