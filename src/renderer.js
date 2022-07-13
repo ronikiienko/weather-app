@@ -116,14 +116,14 @@ function renderForecast(weather) {
             const forecastHourTemperatureDiv = weatherForecastHour.querySelector('.forecastHourTemperatureDiv');
             const forecastHourTimeDiv = weatherForecastHour.querySelector('.forecastHourTimeDiv');
             const forecastHourSkyDescriptionDiv = weatherForecastHour.querySelector('.forecastHourSkyDescriptionDiv');
-            const forecastHourHumidityDiv = weatherForecastHour.querySelector('.forecastHourHumidityDiv');
+            // const forecastHourHumidityDiv = weatherForecastHour.querySelector('.forecastHourHumidityDiv');
             console.log(weatherForecastHour);
 
             forecastHourTimeDiv.textContent = getTimeByIForecast(i);
             forecastHourTemperatureDiv.textContent = `Temperature: ${getHourDataTypeByI(i, I, weather, 'temperature_2m')}°`;
             forecastHourSkyDescriptionDiv.textContent = `${handleWeathercode(getHourDataTypeByI(i, I, weather, 'weathercode')).message}`;
             forecastHourWindDescriptionDiv.textContent = `${handleWindspeed(getHourDataTypeByI(i, I, weather, 'windspeed_10m')).windspeedName}`;
-            forecastHourHumidityDiv.textContent = `${getHourDataTypeByI(i, I, weather, 'relativehumidity_2m')}`;
+            // forecastHourHumidityDiv.textContent = `${getHourDataTypeByI(i, I, weather, 'relativehumidity_2m')}`;
 
             drawPictureBySrc(forecastHourPictureDiv, handleWeathercode(getHourDataTypeByI(i, I, weather, 'weathercode'), getTimeOfDayForHour(getTimeByIForecast(i))).image);
         }
