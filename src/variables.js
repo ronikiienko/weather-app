@@ -13,7 +13,6 @@ export const currentSunriseTimeDiv = document.getElementById('currentSunriseTime
 export const currentSunsetTimeDiv = document.getElementById('currentSunsetTimeDiv');
 export const currentTime = document.getElementById('currentTime');
 export const currentDate = document.getElementById('currentDate');
-export const currentHumidityDiv = document.getElementById('currentHumidityDiv');
 
 export let graphCheckboxes = document.querySelectorAll('input[name=graphDataTypeCheckbox]');
 export let drawGraphsButton = document.getElementById('drawGraphsButton');
