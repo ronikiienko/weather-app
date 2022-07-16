@@ -3,29 +3,30 @@ import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import storageChangedEmitter from 'storage-changed';
 import {drawGraphs, isDrawing} from './graphDrawer';
-import {closeDayDetails, openDayDetails, renderAllWeather, renderCurrentTime, renderMyPosition} from './renderer';
+import {renderAllWeather, renderCurrentTime, renderDayDetails, renderMyPosition} from './renderer';
 import {
     detectPosition,
-    findCheckedRadioForName,
     getDayInfoStringForArrNum,
     getPositionByCity,
     handleCheckedGraphCheckboxesForDetails,
     setGraphSwitchesData,
+    setOrDeleteBackgroundWhite,
+    setUnitSwitchesData,
     weather,
 } from './utils';
 import {
     canvas,
     canvasWidth,
     chooseCityInput,
-    chooseDegreeUnitsRadios,
+    chooseDegreeUnitRadios,
     citySuggestions,
-    closeButton,
     detectPositionButton,
     drawGraphsButton,
     graphCheckboxes,
+    graphCheckboxesIds,
     graphDetailsBar,
     updateCanvasDimensions,
-    updateWeatherButton,
+    weatherDisplay,
     weatherForecastDisplay,
 } from './variables';
 
@@ -33,10 +34,9 @@ import {
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-for (let chooseDegreeUnitsRadio of chooseDegreeUnitsRadios) {
-    chooseDegreeUnitsRadio.addEventListener('change', () => {
-        const units = findCheckedRadioForName(chooseDegreeUnitsRadios);
-        localStorage.setItem('degreeUnits', units);
+for (let chooseDegreeUnitRadio of chooseDegreeUnitRadios) {
+    chooseDegreeUnitRadio.addEventListener('change', () => {
+        setUnitSwitchesData();
     });
 }
 
@@ -54,7 +54,7 @@ chooseCityInput.addEventListener('input', async () => {
         const cityDiv = citySuggestions.appendChild(div);
         cityDiv.setAttribute('id', suggestedCityInfo.id);
         cityDiv.classList.add('citySuggestion');
-        cityDiv.textContent = `${suggestedCityInfo.name}, ${suggestedCityInfo.country}. Administrative: ${suggestedCityInfo.admin1}`;
+        cityDiv.textContent = `${suggestedCityInfo.name}, ${suggestedCityInfo.country}. ${suggestedCityInfo.admin1}`;
     }
     if (chooseCityInput.value === '') {
         citySuggestions.textContent = '';
@@ -90,9 +90,6 @@ citySuggestions.addEventListener('click', (event) => {
 detectPositionButton.addEventListener('click', () => {
     detectPosition();
 });
-updateWeatherButton.addEventListener('click', () => {
-    renderAllWeather();
-});
 
 
 storageChangedEmitter(window.localStorage, {
@@ -124,20 +121,25 @@ for (let graphCheckbox of graphCheckboxes) {
 }
 
 function init() {
+    setOrDeleteBackgroundWhite(weatherForecastDisplay.querySelectorAll('.weatherForecastDayDiv')[0], 'set');
+    if (!localStorage.getItem('position')) {
+        detectPosition();
+    }
+    if (localStorage.getItem('position') === null) {
+        weatherDisplay.style.display = 'none';
+        console.log('position is null');
+    } else {
+        weatherDisplay.style.display = 'block';
+    }
+    setGraphSwitchesData();
+    setUnitSwitchesData('init');
     if (localStorage.getItem('position')) {
         renderAllWeather();
-        drawGraphs();
 
+        drawGraphs();
     }
-    if (!localStorage.getItem('degreeUnits')) {
-        const units = findCheckedRadioForName(chooseDegreeUnitsRadios);
-        localStorage.setItem('degreeUnits', units);
-    } else {
-        const units = localStorage.getItem('degreeUnits');
-        document.getElementById(units).checked = true;
-    }
+    const checkedGraphCheckboxes = window.localStorage.getItem('checkedGraphDataTypeCheckboxes');
     for (let graphCheckbox of graphCheckboxes) {
-        const checkedGraphCheckboxes = window.localStorage.getItem('checkedGraphDataTypeCheckboxes');
         if (checkedGraphCheckboxes.includes(graphCheckbox.id)) {
             graphCheckbox.checked = true;
         }
@@ -173,6 +175,7 @@ function handleOffsetFromCanvas(offsetX, arrayLength) {
 
     return data;
 }
+
 canvas.addEventListener('mousemove', (event) => {
 
     const offsetFromCanvasX = event.offsetX;
@@ -183,6 +186,7 @@ canvas.addEventListener('mousemove', (event) => {
     }
 
     const checkedGraphDataTypeCheckboxes = JSON.parse(localStorage.getItem('checkedGraphDataTypeCheckboxes'));
+
     let fillInfo;
     let mouseMoveOffsetRatio = offsetFromCanvasX / canvasWidth;
     let arrayDateNumberFromRatio = arrNumbers.numberInDailyArr;
@@ -190,7 +194,8 @@ canvas.addEventListener('mousemove', (event) => {
     document.getElementById('graphTimeDetails').textContent = weather.hourly.time[arrayHourNumberFromRatio].slice(11, 16);
     document.getElementById('graphDateDetails').textContent = getDayInfoStringForArrNum(weather, arrayDateNumberFromRatio, true);
 
-    for (let checkedGraphDataTypeCheckbox of checkedGraphDataTypeCheckboxes) {
+    // I could use only checked checkboxes to write info but I use all graph checkboxes instead
+    for (let checkedGraphDataTypeCheckbox of graphCheckboxesIds) {
         fillInfo = handleCheckedGraphCheckboxesForDetails(checkedGraphDataTypeCheckbox);
         let graphDataArrayLength = fillInfo.dataToFill.length;
         let arrayNumberFromRatio = handleOffsetFromCanvas(offsetFromCanvasX, graphDataArrayLength).numberInGivenArr;
@@ -217,7 +222,7 @@ canvas.addEventListener('mouseleave', () => {
 
 canvas.addEventListener('click', (event) => {
     let arrNumbers = handleOffsetFromCanvas(event.offsetX);
-    openDayDetails(weather, arrNumbers.numberInDailyArr);
+    renderDayDetails(weather, arrNumbers.numberInDailyArr);
 });
 
 let interval;
@@ -227,7 +232,6 @@ window.addEventListener('resize', () => {
         clearTimeout();
     }
     interval = setTimeout(() => {
-        console.log('interval hello)');
         updateCanvasDimensions();
         drawGraphs();
 
@@ -238,28 +242,29 @@ window.addEventListener('resize', () => {
 
 weatherForecastDisplay.addEventListener('click', (event) => {
     let target = event.target;
+    console.log(target);
+    let forecastDayDivs = document.querySelectorAll('.weatherForecastDayDiv');
 
     function goNodeUp() {
-        target = target.parentElement;
         if (!target.classList.contains('weatherForecastDayDiv')) {
+            target = target.parentElement;
             goNodeUp();
         } else {
-            openDayDetails(weather, target.id[8]);
+            renderDayDetails(weather, target.id[8]);
             console.log(target.id);
+            for (let forecastDayDiv of forecastDayDivs) {
+                if (forecastDayDiv !== target) {
+                    setOrDeleteBackgroundWhite(forecastDayDiv, 'delete');
+                }
+            }
+            setOrDeleteBackgroundWhite(target, 'set');
         }
     }
 
     goNodeUp();
 });
-window.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') {
-        closeDayDetails();
-    }
-});
 
-closeButton.addEventListener('click', () => {
-    closeDayDetails();
-});
+
 
 
 

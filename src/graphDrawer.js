@@ -69,11 +69,11 @@ function drawGraphDates(weather) {
 function drawGraphTemperatureMarks(weather) {
     const temp = getMaxMinWeeklyTemperature(weather);
     const graphTempMarksDivs = graphTemperatureMarksBar.children;
-    graphTempMarksDivs[0].textContent = temp.max;
-    graphTempMarksDivs[1].textContent = temp.avgHigher;
-    graphTempMarksDivs[2].textContent = temp.avg;
-    graphTempMarksDivs[3].textContent = temp.avgLower;
-    graphTempMarksDivs[4].textContent = temp.min;
+    graphTempMarksDivs[0].textContent = `${temp.max}°`;
+    graphTempMarksDivs[1].textContent = `${temp.avgHigher}°`;
+    graphTempMarksDivs[2].textContent = `${temp.avg}`;
+    graphTempMarksDivs[3].textContent = `${temp.avgLower}°`;
+    graphTempMarksDivs[4].textContent = `${temp.min}`;
 }
 
 async function drawGraphByDataType(checkedGraphDataTypeCheckbox, weather) {
@@ -108,7 +108,6 @@ async function drawGraphByDataType(checkedGraphDataTypeCheckbox, weather) {
         await wait(1);
 
         ctx.stroke();
-        console.log('a');
     }
     ctx.moveTo(0, 0);
     ctx.closePath();
@@ -116,13 +115,20 @@ async function drawGraphByDataType(checkedGraphDataTypeCheckbox, weather) {
 
 export let isDrawing;
 export async function drawGraphs() {
+    if (isDrawing === true) {
+        return;
+    }
     isDrawing = true;
+    const checkedGraphCheckboxesIds = JSON.parse(localStorage.getItem('checkedGraphDataTypeCheckboxes'));
+    if (checkedGraphCheckboxesIds === null || localStorage.getItem('position') === null) {
+        isDrawing = false;
+        return;
+    }
     disableEnableGraphCheckboxes();
     const weather = await getWeatherByPosition(JSON.parse(localStorage.getItem('position')));
     drawGraphDates(weather);
     drawGraphTemperatureMarks(weather);
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-    const checkedGraphCheckboxesIds = JSON.parse(localStorage.getItem('checkedGraphDataTypeCheckboxes'));
     for (let checkedGraphCheckboxId of checkedGraphCheckboxesIds) {
         await drawGraphByDataType(checkedGraphCheckboxId, weather);
 

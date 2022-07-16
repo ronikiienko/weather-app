@@ -5,16 +5,23 @@ export const myPositionDisplay = document.getElementById('myPositionDisplay');
 
 
 export const currentWeatherPictureDiv = document.getElementById('currentWeatherPictureDiv');
-export const currentWeatherDescriptionDiv = document.getElementById('currentWeatherDescriptionDiv');
+export const currentSkyDescriptionDiv = document.getElementById('currentSkyDescriptionDiv');
 export const currentWeatherDisplay = document.getElementById('currentWeatherDisplay');
 export const currentTemperatureDisplayDiv = document.getElementById('currentTemperatureDisplayDiv');
 export const currentWindSpeedDiv = document.getElementById('currentWindSpeedDiv');
-export const currentSunriseTimeDiv = document.getElementById('currentSunriseTimeDiv');
-export const currentSunsetTimeDiv = document.getElementById('currentSunsetTimeDiv');
 export const currentTime = document.getElementById('currentTime');
 export const currentDate = document.getElementById('currentDate');
+export const currentFeelsLikeDiv = document.getElementById('currentFeelsLikeDiv');
+export const currentHumidityDiv = document.getElementById('currentHumidityDiv');
+export const currentDewPointDiv = document.getElementById('currentDewPointDiv');
+export const currentPressureDiv = document.getElementById('currentPressureDiv');
+export const weatherDisplay = document.getElementById('weatherDisplay');
 
 export let graphCheckboxes = document.querySelectorAll('input[name=graphDataTypeCheckbox]');
+export const graphCheckboxesIds = [];
+for (let graphCheckbox of graphCheckboxes) {
+    graphCheckboxesIds.push(graphCheckbox.id);
+}
 export let drawGraphsButton = document.getElementById('drawGraphsButton');
 
 
@@ -22,7 +29,7 @@ export const weatherForecastDayDiv = document.querySelectorAll('weatherForecastD
 
 
 export const updateWeatherButton = document.getElementById('updateWeatherButton');
-export const chooseDegreeUnitsRadios = document.querySelectorAll('input[name=\'chooseDegreeUnits\']');
+export const chooseDegreeUnitRadios = document.querySelectorAll('input[name=\'chooseDegreeUnit\']');
 export const weatherForecastDisplay = document.getElementById('weatherForecastDisplay');
 
 
@@ -47,8 +54,6 @@ export const graphDatesBar = document.getElementById('graphDatesBar');
 
 // export let interval;
 
-export const overlayMask = document.getElementById('overlayMask');
-export const closeButton = document.getElementById('closeButton');
 
 export const dayDetailsDisplay = document.getElementById('dayDetailsDisplay');
 

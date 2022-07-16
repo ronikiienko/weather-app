@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import weatherIcons from './images/pack1svg/*.svg';
-import {detectPositionButton, drawGraphsButton, graphCheckboxes} from './variables';
+import {currentWeatherDisplay, detectPositionButton, drawGraphsButton, graphCheckboxes} from './variables';
 
 
 export let weather;
@@ -24,12 +24,24 @@ export function getPositionByCity(city) {
         .then(resp => resp.json());
 }
 
-export function getWeatherByPosition(position) {
-    let tempUnit;
-    if (localStorage.getItem('degreeUnits') === 'farenheits') {
-        tempUnit = 'temperature_unit=fahrenheit';
+export function getUnits(degreeUnit) {
+    let units = {};
+    if (degreeUnit === 'farenheit') {
+        units.windspeedUnit = 'windspeed_unit=mph';
+        units.temperatureUnit = 'temperature_unit=fahrenheit';
+        units.unitChooseButtonId = 'farenheit';
+    } else if (degreeUnit === 'celsius') {
+        units.windspeedUnit = '';
+        units.temperatureUnit = '';
+        units.unitChooseButtonId = 'celsius';
     }
-    return fetch(`https://api.open-meteo.com/v1/forecast?latitude=${position.latitude}&longitude=${position.longitude}&hourly=weathercode,temperature_2m,windspeed_10m,relativehumidity_2m&daily=sunrise,sunset,weathercode,temperature_2m_max,temperature_2m_min&current_weather=true&timezone=${position.timeZone}&${tempUnit}&windspeed_unit=ms`)
+    return units;
+}
+
+export function getWeatherByPosition(position) {
+    let units;
+    units = JSON.parse(localStorage.getItem('units'));
+    return fetch(`https://api.open-meteo.com/v1/forecast?latitude=${position.latitude}&longitude=${position.longitude}&hourly=weathercode,temperature_2m,windspeed_10m,relativehumidity_2m,apparent_temperature,dewpoint_2m,pressure_msl&daily=windspeed_10m_max,sunrise,sunset,weathercode,temperature_2m_max,temperature_2m_min&current_weather=true&timezone=${position.timeZone}&${units.windspeedUnit}&${units.temperatureUnit}`)
         .then(resp => resp.json())
         .then(json => {
             weather = json;
@@ -69,6 +81,10 @@ export function getDayInfoForDate(date) {
     return dayInfo;
 }
 
+export function getCurrentHourNumberInHourArray(timeZone) {
+    const currentHourNumberInHourArray = dayjs.tz(dayjs(), timeZone).$H;
+    return currentHourNumberInHourArray;
+}
 
 export function detectPosition() {
     updateGeolocation()
@@ -329,46 +345,54 @@ export function handleWeathercode(weathercode, timeOfTheDay) {
 }
 
 export function handleWindspeed(windspeed) {
+    const windspeedUnit = JSON.parse(localStorage.getItem('units')).windspeedUnit;
+    let windspeedMs;
+
+    if (windspeedUnit === 'windspeed_unit=mph') {
+        windspeedMs = windspeed / 2.237;
+    } else {
+        windspeedMs = windspeed / 3.6;
+    }
     let windName;
     let windDescription;
 
-    if (windspeed < 0.5) {
+    if (windspeedMs < 0.5) {
         windName = 'Calm';
         windDescription = 'Smoke drifts with air, weather vanes inactive';
-    } else if (windspeed >= 0.5 && windspeed < 1.5) {
+    } else if (windspeedMs >= 0.5 && windspeedMs < 1.5) {
         windName = 'Light  air';
         windDescription = 'Weather vanes active, wind felt on face, leaves rustle';
-    } else if (windspeed >= 1.5 && windspeed < 3) {
+    } else if (windspeedMs >= 1.5 && windspeedMs < 3) {
         windName = 'Light breeze';
         windDescription = 'Weather vanes active, wind felt on face, leaves rustle';
-    } else if (windspeed >= 3 && windspeed < 5) {
+    } else if (windspeedMs >= 3 && windspeedMs < 5) {
         windName = 'Gentle breeze';
         windDescription = 'Leaves & small twigs move, light flags extend';
-    } else if (windspeed >= 5 && windspeed < 8) {
+    } else if (windspeedMs >= 5 && windspeedMs < 8) {
         windName = 'Moderate breeze';
         windDescription = 'Small branches sway, dust & loose paper blows about';
-    } else if (windspeed >= 8 && windspeed < 10.5) {
+    } else if (windspeedMs >= 8 && windspeedMs < 10.5) {
         windName = 'Fresh breeze';
         windDescription = 'Small trees sway, waves break on inland waters';
-    } else if (windspeed >= 10.5 && windspeed < 13.5) {
+    } else if (windspeedMs >= 10.5 && windspeedMs < 13.5) {
         windName = 'Strong breeze';
         windDescription = 'Large branches sway, umbrellas difficult to use';
-    } else if (windspeed >= 13.5 && windspeed < 16.5) {
+    } else if (windspeedMs >= 13.5 && windspeedMs < 16.5) {
         windName = 'Moderate gale';
         windDescription = 'Whole trees sway, difficult to walk against wind';
-    } else if (windspeed >= 16.5 && windspeed < 20) {
+    } else if (windspeedMs >= 16.5 && windspeedMs < 20) {
         windName = 'Fresh gale';
         windDescription = 'Twigs broken off trees, walking against wind very difficult';
-    } else if (windspeed >= 20 && windspeed < 23.5) {
+    } else if (windspeedMs >= 20 && windspeedMs < 23.5) {
         windName = 'Strong gale';
         windDescription = 'Slight damage to buildings, shingles blown off roof';
-    } else if (windspeed >= 23.5 && windspeed < 27.5) {
+    } else if (windspeedMs >= 23.5 && windspeedMs < 27.5) {
         windName = 'Whole gale';
         windDescription = 'Trees uprooted, considerable damage to buildings';
-    } else if (windspeed >= 27.5 && windspeed < 31.5) {
+    } else if (windspeedMs >= 27.5 && windspeedMs < 31.5) {
         windName = 'Storm';
         windDescription = 'Widespread damage, very rare occurrence';
-    } else if (windspeed >= 31.5) {
+    } else if (windspeedMs >= 31.5) {
         windName = 'Hurricane';
         windDescription = 'Violent destruction';
     }
@@ -410,14 +434,44 @@ export function getMaxMinWeeklyTemperature(weather) {
     return data;
 }
 
-export function findCheckedRadioForName(name) {
-    const inputs = name;
-    for (let input of inputs) {
-        if (input.checked) {
-            return input.id;
-        }
-
+export function checkedRadioForName(parentDiv, checkedNotChecked, name) {
+    let checkedRadio;
+    let notCheckedRadio;
+    checkedRadio = parentDiv.querySelector(`input[name="${name}"]:checked`);
+    notCheckedRadio = parentDiv.querySelectorAll(`input[name="${name}"]:not(:checked)`);
+    if (checkedNotChecked === 'checked') {
+        return checkedRadio;
+    } else if (checkedNotChecked === 'notChecked') {
+        return notCheckedRadio;
     }
+}
+
+export function setOrDeleteBackgroundWhite(element, setOrDelete, transparency) {
+    if (setOrDelete === 'set') {
+        element.style.backgroundColor = `rgba(255,255,255,0.2)`;
+    } else if (setOrDelete === 'delete') {
+        element.style.backgroundColor = `transparent`;
+    }
+}
+
+export function setUnitSwitchesData(init) {
+    if (init === 'init' && localStorage.getItem('units')) {
+        const checkedUnitInputId = JSON.parse(localStorage.getItem('units')).unitChooseButtonId;
+        currentWeatherDisplay.querySelector(`input[id="${checkedUnitInputId}"]`).checked = true;
+        setOrDeleteBackgroundWhite(currentWeatherDisplay.querySelector(`label[for="${checkedUnitInputId}"]`), 'set');
+    } else {
+        const checkedRadioId = checkedRadioForName(currentWeatherDisplay, 'checked', 'chooseDegreeUnit').id;
+        const notCheckedRadioId = checkedRadioForName(currentWeatherDisplay, 'notChecked', 'chooseDegreeUnit')[0].id;
+        const chosenDegreeUnitLabel = currentWeatherDisplay.querySelector(`label[for="${checkedRadioId}"]`);
+        const notChosenDegreeUnitLabel = currentWeatherDisplay.querySelector(`label[for="${notCheckedRadioId}"]`);
+        setOrDeleteBackgroundWhite(chosenDegreeUnitLabel, 'set');
+        setOrDeleteBackgroundWhite(notChosenDegreeUnitLabel, 'delete');
+
+        const units = getUnits(checkedRadioId);
+        localStorage.setItem('units', units);
+    }
+
+
 }
 
 export function setGraphSwitchesData() {
@@ -443,6 +497,14 @@ export async function wait(delay) {
 export function averageFromTwoArrays(arr1, arr2) {
     let average = arr1.map((element, index) => (element + arr2[index]) / 2);
     return average;
+}
+
+export function averageNumberFromArray(arr) {
+    let sum = 0;
+    for (let i = 0; i < arr.length; i++) {
+        sum += arr[i];
+    }
+    return (sum / arr.length).toFixed(1);
 }
 
 export function handleCheckedGraphCheckboxesForDetails(checkboxId) {

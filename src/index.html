@@ -9,325 +9,326 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<p>Choose city</p>
-<input type="text" id="searchCity">
-<div id="citySuggestions"></div>
-<button id="detectPositionButton">Detect my position</button>
-<p id="myPositionDisplay"></p>
+<img id="detectPositionButton" src="images/icons/location-1.svg">
+<div id="chooseCityDiv">
 
-<div id="graphDataTypeCheckboxes">
-    <input type="checkbox" name="graphDataTypeCheckbox" id="graphDailyMaxTemperatureCheckbox">
-    <label for="graphDailyMaxTemperatureCheckbox">Daily maximum temperature</label>
-    <input type="checkbox" name="graphDataTypeCheckbox" id="graphDailyMinTemperatureCheckbox">
-    <label for="graphDailyMinTemperatureCheckbox">Daily minimum temperature</label>
-    <input type="checkbox" name="graphDataTypeCheckbox" id="graphDailyAverageTemperatureCheckbox">
-    <label for="graphDailyAverageTemperatureCheckbox">Daily average temperature</label>
-    <input type="checkbox" name="graphDataTypeCheckbox" id="graphHourlyTemperatureCheckbox">
-    <label for="graphHourlyTemperatureCheckbox">Hourly Temperature</label>
-    <button id="drawGraphsButton">Draw graphs</button>
+    <input type="text" id="searchCity" placeholder="Search city">
+
+    <div id="citySuggestions"></div>
+
 </div>
 
 
-<div id="currentDate"></div>
-<div id="currentTime"></div>
 <div id="weatherDisplay">
 
     <div id="currentWeatherDisplay">
-
-        <div id="currentWeatherPictureDiv"></div>
-
-        <div id="currentWeatherTemperature">
+        <div id="currentTimePosition">
+            <div id="myPositionDisplay"></div>
+            <div id="currentDate"></div>
+            <div id="currentTime"></div>
+        </div>
+        <div id="currentTemperaturePicUnitsChoose">
+            <div id="currentWeatherPictureDiv"></div>
             <div id="currentTemperatureDisplayDiv"></div>
+            <div id="unitsChoose">
+                <input type="radio" id="farenheit" name="chooseDegreeUnit">
+                <label for="farenheit">F°</label>
+                <input type="radio" id="celsius" name="chooseDegreeUnit" checked>
+                <label for="celsius">C°</label>
+            </div>
         </div>
-        <div id="currentWeatherDescription">
-            <div id="currentSunriseTimeDiv"></div>
-            <div id="currentSunsetTimeDiv"></div>
-            <div id="currentWindSpeedDiv"></div>
-            <div id="currentWeatherDescriptionDiv"></div>
-        </div>
+        <div id="currentSkyDescriptionDiv"></div>
 
+        <div id="currentWeatherDescription">
+            <div id="currentFeelsLikeDiv"></div>
+            <div id="currentHumidityDiv"></div>
+            <div id="currentDewPointDiv"></div>
+            <div id="currentPressureDiv"></div>
+            <div id="currentWindSpeedDiv"></div>
+        </div>
     </div>
+    <p class="infoBarDescription">Daily</p>
     <div id="weatherForecastDisplay">
         <div class="weatherForecastDayDiv" id="forecast0">
-            <div class="weatherForecastDayGeneralDiv">
-                <div class="forecastDayGeneralDateDiv"></div>
-                <div class="forecastDayGeneralTemperatureDiv"></div>
-                <div class="forecastDayGeneralSunriseTimeDiv"></div>
-                <div class="forecastDayGeneralSunsetTimeDiv"></div>
+            <div class="forecastDayDateDiv"></div>
+            <div class="forecastDayPictureDiv"></div>
+            <div class="forecastDayWeatherDescriptionDiv"></div>
+            <div class="forecastDayMinMaxTemperaturesDiv">
+                <div class="forecastDayMaxTemperatureDiv"></div>
+                <div class="forecastDayMinTemperatureDiv"></div>
             </div>
-            <div class="weatherForecastHourDiv">
-                <div class="forecastHourTimeDiv"></div>
-                <div class="forecastHourPictureDiv"></div>
-                <div class="forecastHourSkyDescriptionDiv"></div>
-                <div class="forecastHourWindDescriptionDiv"></div>
-                <div class="forecastHourTemperatureDiv"></div>
-                <div class="forecastHourHumidityDiv"></div>
-            </div>
-            <div class="weatherForecastHourDiv">
-                <div class="forecastHourTimeDiv"></div>
-                <div class="forecastHourPictureDiv"></div>
-                <div class="forecastHourSkyDescriptionDiv"></div>
-                <div class="forecastHourWindDescriptionDiv"></div>
-                <div class="forecastHourTemperatureDiv"></div>
-                <div class="forecastHourHumidityDiv"></div>
-            </div>
-            <div class="weatherForecastHourDiv">
-                <div class="forecastHourTimeDiv"></div>
-                <div class="forecastHourPictureDiv"></div>
-                <div class="forecastHourSkyDescriptionDiv"></div>
-                <div class="forecastHourWindDescriptionDiv"></div>
-                <div class="forecastHourTemperatureDiv"></div>
-                <div class="forecastHourHumidityDiv"></div>
-            </div>
-            <div class="weatherForecastHourDiv">
-                <div class="forecastHourTimeDiv"></div>
-                <div class="forecastHourPictureDiv"></div>
-                <div class="forecastHourSkyDescriptionDiv"></div>
-                <div class="forecastHourWindDescriptionDiv"></div>
-                <div class="forecastHourTemperatureDiv"></div>
-                <div class="forecastHourHumidityDiv"></div>
-            </div>
+
         </div>
         <div class="weatherForecastDayDiv" id="forecast1">
-            <div class="weatherForecastDayGeneralDiv">
-                <div class="forecastDayGeneralDateDiv"></div>
-                <div class="forecastDayGeneralTemperatureDiv"></div>
-                <div class="forecastDayGeneralSunriseTimeDiv"></div>
-                <div class="forecastDayGeneralSunsetTimeDiv"></div>
-            </div>
-            <div class="weatherForecastHourDiv">
-                <div class="forecastHourTimeDiv"></div>
-                <div class="forecastHourPictureDiv"></div>
-                <div class="forecastHourSkyDescriptionDiv"></div>
-                <div class="forecastHourWindDescriptionDiv"></div>
-                <div class="forecastHourTemperatureDiv"></div>
-                <div class="forecastHourHumidityDiv"></div>
-            </div>
-            <div class="weatherForecastHourDiv">
-                <div class="forecastHourTimeDiv"></div>
-                <div class="forecastHourPictureDiv"></div>
-                <div class="forecastHourSkyDescriptionDiv"></div>
-                <div class="forecastHourWindDescriptionDiv"></div>
-                <div class="forecastHourTemperatureDiv"></div>
-                <div class="forecastHourHumidityDiv"></div>
-            </div>
-            <div class="weatherForecastHourDiv">
-                <div class="forecastHourTimeDiv"></div>
-                <div class="forecastHourPictureDiv"></div>
-                <div class="forecastHourSkyDescriptionDiv"></div>
-                <div class="forecastHourWindDescriptionDiv"></div>
-                <div class="forecastHourTemperatureDiv"></div>
-                <div class="forecastHourHumidityDiv"></div>
-            </div>
-            <div class="weatherForecastHourDiv">
-                <div class="forecastHourTimeDiv"></div>
-                <div class="forecastHourPictureDiv"></div>
-                <div class="forecastHourSkyDescriptionDiv"></div>
-                <div class="forecastHourWindDescriptionDiv"></div>
-                <div class="forecastHourTemperatureDiv"></div>
-                <div class="forecastHourHumidityDiv"></div>
+            <div class="forecastDayDateDiv"></div>
+            <div class="forecastDayPictureDiv"></div>
+            <div class="forecastDayWeatherDescriptionDiv"></div>
+            <div class="forecastDayMinMaxTemperaturesDiv">
+                <div class="forecastDayMaxTemperatureDiv"></div>
+                <div class="forecastDayMinTemperatureDiv"></div>
             </div>
         </div>
         <div class="weatherForecastDayDiv" id="forecast2">
-            <div class="weatherForecastDayGeneralDiv">
-                <div class="forecastDayGeneralDateDiv"></div>
-                <div class="forecastDayGeneralTemperatureDiv"></div>
-                <div class="forecastDayGeneralSunriseTimeDiv"></div>
-                <div class="forecastDayGeneralSunsetTimeDiv"></div>
-            </div>
-            <div class="weatherForecastHourDiv">
-                <div class="forecastHourTimeDiv"></div>
-                <div class="forecastHourPictureDiv"></div>
-                <div class="forecastHourSkyDescriptionDiv"></div>
-                <div class="forecastHourWindDescriptionDiv"></div>
-                <div class="forecastHourTemperatureDiv"></div>
-                <div class="forecastHourHumidityDiv"></div>
-            </div>
-            <div class="weatherForecastHourDiv">
-                <div class="forecastHourTimeDiv"></div>
-                <div class="forecastHourPictureDiv"></div>
-                <div class="forecastHourSkyDescriptionDiv"></div>
-                <div class="forecastHourWindDescriptionDiv"></div>
-                <div class="forecastHourTemperatureDiv"></div>
-                <div class="forecastHourHumidityDiv"></div>
-            </div>
-            <div class="weatherForecastHourDiv">
-                <div class="forecastHourTimeDiv"></div>
-                <div class="forecastHourPictureDiv"></div>
-                <div class="forecastHourSkyDescriptionDiv"></div>
-                <div class="forecastHourWindDescriptionDiv"></div>
-                <div class="forecastHourTemperatureDiv"></div>
-                <div class="forecastHourHumidityDiv"></div>
-            </div>
-            <div class="weatherForecastHourDiv">
-                <div class="forecastHourTimeDiv"></div>
-                <div class="forecastHourPictureDiv"></div>
-                <div class="forecastHourSkyDescriptionDiv"></div>
-                <div class="forecastHourWindDescriptionDiv"></div>
-                <div class="forecastHourTemperatureDiv"></div>
-                <div class="forecastHourHumidityDiv"></div>
+            <div class="forecastDayDateDiv"></div>
+            <div class="forecastDayPictureDiv"></div>
+            <div class="forecastDayWeatherDescriptionDiv"></div>
+            <div class="forecastDayMinMaxTemperaturesDiv">
+                <div class="forecastDayMaxTemperatureDiv"></div>
+                <div class="forecastDayMinTemperatureDiv"></div>
             </div>
         </div>
         <div class="weatherForecastDayDiv" id="forecast3">
-            <div class="weatherForecastDayGeneralDiv">
-                <div class="forecastDayGeneralDateDiv"></div>
-                <div class="forecastDayGeneralTemperatureDiv"></div>
-                <div class="forecastDayGeneralSunriseTimeDiv"></div>
-                <div class="forecastDayGeneralSunsetTimeDiv"></div>
-            </div>
-            <div class="weatherForecastHourDiv">
-                <div class="forecastHourTimeDiv"></div>
-                <div class="forecastHourPictureDiv"></div>
-                <div class="forecastHourSkyDescriptionDiv"></div>
-                <div class="forecastHourWindDescriptionDiv"></div>
-                <div class="forecastHourTemperatureDiv"></div>
-                <div class="forecastHourHumidityDiv"></div>
-            </div>
-            <div class="weatherForecastHourDiv">
-                <div class="forecastHourTimeDiv"></div>
-                <div class="forecastHourPictureDiv"></div>
-                <div class="forecastHourSkyDescriptionDiv"></div>
-                <div class="forecastHourWindDescriptionDiv"></div>
-                <div class="forecastHourTemperatureDiv"></div>
-                <div class="forecastHourHumidityDiv"></div>
-            </div>
-            <div class="weatherForecastHourDiv">
-                <div class="forecastHourTimeDiv"></div>
-                <div class="forecastHourPictureDiv"></div>
-                <div class="forecastHourSkyDescriptionDiv"></div>
-                <div class="forecastHourWindDescriptionDiv"></div>
-                <div class="forecastHourTemperatureDiv"></div>
-                <div class="forecastHourHumidityDiv"></div>
-            </div>
-            <div class="weatherForecastHourDiv">
-                <div class="forecastHourTimeDiv"></div>
-                <div class="forecastHourPictureDiv"></div>
-                <div class="forecastHourSkyDescriptionDiv"></div>
-                <div class="forecastHourWindDescriptionDiv"></div>
-                <div class="forecastHourTemperatureDiv"></div>
-                <div class="forecastHourHumidityDiv"></div>
+            <div class="forecastDayDateDiv"></div>
+            <div class="forecastDayPictureDiv"></div>
+            <div class="forecastDayWeatherDescriptionDiv"></div>
+            <div class="forecastDayMinMaxTemperaturesDiv">
+                <div class="forecastDayMaxTemperatureDiv"></div>
+                <div class="forecastDayMinTemperatureDiv"></div>
             </div>
         </div>
         <div class="weatherForecastDayDiv" id="forecast4">
-            <div class="weatherForecastDayGeneralDiv">
-                <div class="forecastDayGeneralDateDiv"></div>
-                <div class="forecastDayGeneralTemperatureDiv"></div>
-                <div class="forecastDayGeneralSunriseTimeDiv"></div>
-                <div class="forecastDayGeneralSunsetTimeDiv"></div>
-            </div>
-            <div class="weatherForecastHourDiv">
-                <div class="forecastHourTimeDiv"></div>
-                <div class="forecastHourPictureDiv"></div>
-                <div class="forecastHourSkyDescriptionDiv"></div>
-                <div class="forecastHourWindDescriptionDiv"></div>
-                <div class="forecastHourTemperatureDiv"></div>
-                <div class="forecastHourHumidityDiv"></div>
-            </div>
-            <div class="weatherForecastHourDiv">
-                <div class="forecastHourTimeDiv"></div>
-                <div class="forecastHourPictureDiv"></div>
-                <div class="forecastHourSkyDescriptionDiv"></div>
-                <div class="forecastHourWindDescriptionDiv"></div>
-                <div class="forecastHourTemperatureDiv"></div>
-                <div class="forecastHourHumidityDiv"></div>
-            </div>
-            <div class="weatherForecastHourDiv">
-                <div class="forecastHourTimeDiv"></div>
-                <div class="forecastHourPictureDiv"></div>
-                <div class="forecastHourSkyDescriptionDiv"></div>
-                <div class="forecastHourWindDescriptionDiv"></div>
-                <div class="forecastHourTemperatureDiv"></div>
-                <div class="forecastHourHumidityDiv"></div>
-            </div>
-            <div class="weatherForecastHourDiv">
-                <div class="forecastHourTimeDiv"></div>
-                <div class="forecastHourPictureDiv"></div>
-                <div class="forecastHourSkyDescriptionDiv"></div>
-                <div class="forecastHourWindDescriptionDiv"></div>
-                <div class="forecastHourTemperatureDiv"></div>
-                <div class="forecastHourHumidityDiv"></div>
+            <div class="forecastDayDateDiv"></div>
+            <div class="forecastDayPictureDiv"></div>
+            <div class="forecastDayWeatherDescriptionDiv"></div>
+            <div class="forecastDayMinMaxTemperaturesDiv">
+                <div class="forecastDayMaxTemperatureDiv"></div>
+                <div class="forecastDayMinTemperatureDiv"></div>
             </div>
         </div>
         <div class="weatherForecastDayDiv" id="forecast5">
-            <div class="weatherForecastDayGeneralDiv">
-                <div class="forecastDayGeneralDateDiv"></div>
-                <div class="forecastDayGeneralTemperatureDiv"></div>
-                <div class="forecastDayGeneralSunriseTimeDiv"></div>
-                <div class="forecastDayGeneralSunsetTimeDiv"></div>
-            </div>
-            <div class="weatherForecastHourDiv">
-                <div class="forecastHourTimeDiv"></div>
-                <div class="forecastHourPictureDiv"></div>
-                <div class="forecastHourSkyDescriptionDiv"></div>
-                <div class="forecastHourWindDescriptionDiv"></div>
-                <div class="forecastHourTemperatureDiv"></div>
-                <div class="forecastHourHumidityDiv"></div>
-            </div>
-            <div class="weatherForecastHourDiv">
-                <div class="forecastHourTimeDiv"></div>
-                <div class="forecastHourPictureDiv"></div>
-                <div class="forecastHourSkyDescriptionDiv"></div>
-                <div class="forecastHourWindDescriptionDiv"></div>
-                <div class="forecastHourTemperatureDiv"></div>
-                <div class="forecastHourHumidityDiv"></div>
-            </div>
-            <div class="weatherForecastHourDiv">
-                <div class="forecastHourTimeDiv"></div>
-                <div class="forecastHourPictureDiv"></div>
-                <div class="forecastHourSkyDescriptionDiv"></div>
-                <div class="forecastHourWindDescriptionDiv"></div>
-                <div class="forecastHourTemperatureDiv"></div>
-                <div class="forecastHourHumidityDiv"></div>
-            </div>
-            <div class="weatherForecastHourDiv">
-                <div class="forecastHourTimeDiv"></div>
-                <div class="forecastHourPictureDiv"></div>
-                <div class="forecastHourSkyDescriptionDiv"></div>
-                <div class="forecastHourWindDescriptionDiv"></div>
-                <div class="forecastHourTemperatureDiv"></div>
-                <div class="forecastHourHumidityDiv"></div>
+            <div class="forecastDayDateDiv"></div>
+            <div class="forecastDayPictureDiv"></div>
+            <div class="forecastDayWeatherDescriptionDiv"></div>
+            <div class="forecastDayMinMaxTemperaturesDiv">
+                <div class="forecastDayMaxTemperatureDiv"></div>
+                <div class="forecastDayMinTemperatureDiv"></div>
             </div>
         </div>
         <div class="weatherForecastDayDiv" id="forecast6">
-            <div class="weatherForecastDayGeneralDiv">
-                <div class="forecastDayGeneralDateDiv"></div>
-                <div class="forecastDayGeneralTemperatureDiv"></div>
-                <div class="forecastDayGeneralSunriseTimeDiv"></div>
-                <div class="forecastDayGeneralSunsetTimeDiv"></div>
-            </div>
-            <div class="weatherForecastHourDiv">
-                <div class="forecastHourTimeDiv"></div>
-                <div class="forecastHourPictureDiv"></div>
-                <div class="forecastHourSkyDescriptionDiv"></div>
-                <div class="forecastHourWindDescriptionDiv"></div>
-                <div class="forecastHourTemperatureDiv"></div>
-                <div class="forecastHourHumidityDiv"></div>
-            </div>
-            <div class="weatherForecastHourDiv">
-                <div class="forecastHourTimeDiv"></div>
-                <div class="forecastHourPictureDiv"></div>
-                <div class="forecastHourSkyDescriptionDiv"></div>
-                <div class="forecastHourWindDescriptionDiv"></div>
-                <div class="forecastHourTemperatureDiv"></div>
-                <div class="forecastHourHumidityDiv"></div>
-            </div>
-            <div class="weatherForecastHourDiv">
-                <div class="forecastHourTimeDiv"></div>
-                <div class="forecastHourPictureDiv"></div>
-                <div class="forecastHourSkyDescriptionDiv"></div>
-                <div class="forecastHourWindDescriptionDiv"></div>
-                <div class="forecastHourTemperatureDiv"></div>
-                <div class="forecastHourHumidityDiv"></div>
-            </div>
-            <div class="weatherForecastHourDiv">
-                <div class="forecastHourTimeDiv"></div>
-                <div class="forecastHourPictureDiv"></div>
-                <div class="forecastHourSkyDescriptionDiv"></div>
-                <div class="forecastHourWindDescriptionDiv"></div>
-                <div class="forecastHourTemperatureDiv"></div>
-                <div class="forecastHourHumidityDiv"></div>
+            <div class="forecastDayDateDiv"></div>
+            <div class="forecastDayPictureDiv"></div>
+            <div class="forecastDayWeatherDescriptionDiv"></div>
+            <div class="forecastDayMinMaxTemperaturesDiv">
+                <div class="forecastDayMaxTemperatureDiv"></div>
+                <div class="forecastDayMinTemperatureDiv"></div>
             </div>
         </div>
+    </div>
+    <p class="infoBarDescription">Hourly</p>
+    <div id="dayHourlyDisplay">
+        <div id="dayHours">
+            <div id="dayHourDiv0">
+                <div class="dayHourTimeDiv"></div>
+                <div class="dayHourPictureDiv"></div>
+                <div class="dayHourTemperatureDiv"></div>
+                <div class="dayHourSkyDescriptionDiv"></div>
+                <div class="dayHourWindDescriptionDiv"></div>
+                <div class="dayHourHumidityDiv"></div>
+            </div>
+            <div id="dayHourDiv1">
+                <div class="dayHourTimeDiv"></div>
+                <div class="dayHourPictureDiv"></div>
+                <div class="dayHourTemperatureDiv"></div>
+                <div class="dayHourSkyDescriptionDiv"></div>
+                <div class="dayHourWindDescriptionDiv"></div>
+                <div class="dayHourHumidityDiv"></div>
+            </div>
+            <div id="dayHourDiv2">
+                <div class="dayHourTimeDiv"></div>
+                <div class="dayHourPictureDiv"></div>
+                <div class="dayHourTemperatureDiv"></div>
+                <div class="dayHourSkyDescriptionDiv"></div>
+                <div class="dayHourWindDescriptionDiv"></div>
+                <div class="dayHourHumidityDiv"></div>
+            </div>
+            <div id="dayHourDiv3">
+                <div class="dayHourTimeDiv"></div>
+                <div class="dayHourPictureDiv"></div>
+                <div class="dayHourTemperatureDiv"></div>
+                <div class="dayHourSkyDescriptionDiv"></div>
+                <div class="dayHourWindDescriptionDiv"></div>
+                <div class="dayHourHumidityDiv"></div>
+            </div>
+            <div id="dayHourDiv4">
+                <div class="dayHourTimeDiv"></div>
+                <div class="dayHourPictureDiv"></div>
+                <div class="dayHourTemperatureDiv"></div>
+                <div class="dayHourSkyDescriptionDiv"></div>
+                <div class="dayHourWindDescriptionDiv"></div>
+                <div class="dayHourHumidityDiv"></div>
+            </div>
+            <div id="dayHourDiv5">
+                <div class="dayHourTimeDiv"></div>
+                <div class="dayHourPictureDiv"></div>
+                <div class="dayHourTemperatureDiv"></div>
+                <div class="dayHourSkyDescriptionDiv"></div>
+                <div class="dayHourWindDescriptionDiv"></div>
+                <div class="dayHourHumidityDiv"></div>
+            </div>
+            <div id="dayHourDiv6">
+                <div class="dayHourTimeDiv"></div>
+                <div class="dayHourPictureDiv"></div>
+                <div class="dayHourTemperatureDiv"></div>
+                <div class="dayHourSkyDescriptionDiv"></div>
+                <div class="dayHourWindDescriptionDiv"></div>
+                <div class="dayHourHumidityDiv"></div>
+            </div>
+            <div id="dayHourDiv7">
+                <div class="dayHourTimeDiv"></div>
+                <div class="dayHourPictureDiv"></div>
+                <div class="dayHourTemperatureDiv"></div>
+                <div class="dayHourSkyDescriptionDiv"></div>
+                <div class="dayHourWindDescriptionDiv"></div>
+                <div class="dayHourHumidityDiv"></div>
+            </div>
+            <div id="dayHourDiv8">
+                <div class="dayHourTimeDiv"></div>
+                <div class="dayHourPictureDiv"></div>
+                <div class="dayHourTemperatureDiv"></div>
+                <div class="dayHourSkyDescriptionDiv"></div>
+                <div class="dayHourWindDescriptionDiv"></div>
+                <div class="dayHourHumidityDiv"></div>
+            </div>
+            <div id="dayHourDiv9">
+                <div class="dayHourTimeDiv"></div>
+                <div class="dayHourPictureDiv"></div>
+                <div class="dayHourTemperatureDiv"></div>
+                <div class="dayHourSkyDescriptionDiv"></div>
+                <div class="dayHourWindDescriptionDiv"></div>
+                <div class="dayHourHumidityDiv"></div>
+            </div>
+            <div id="dayHourDiv10">
+                <div class="dayHourTimeDiv"></div>
+                <div class="dayHourPictureDiv"></div>
+                <div class="dayHourTemperatureDiv"></div>
+                <div class="dayHourSkyDescriptionDiv"></div>
+                <div class="dayHourWindDescriptionDiv"></div>
+                <div class="dayHourHumidityDiv"></div>
+            </div>
+            <div id="dayHourDiv11">
+                <div class="dayHourTimeDiv"></div>
+                <div class="dayHourPictureDiv"></div>
+                <div class="dayHourTemperatureDiv"></div>
+                <div class="dayHourSkyDescriptionDiv"></div>
+                <div class="dayHourWindDescriptionDiv"></div>
+                <div class="dayHourHumidityDiv"></div>
+            </div>
+            <div id="dayHourDiv12">
+                <div class="dayHourTimeDiv"></div>
+                <div class="dayHourPictureDiv"></div>
+                <div class="dayHourTemperatureDiv"></div>
+                <div class="dayHourSkyDescriptionDiv"></div>
+                <div class="dayHourWindDescriptionDiv"></div>
+                <div class="dayHourHumidityDiv"></div>
+            </div>
+            <div id="dayHourDiv13">
+                <div class="dayHourTimeDiv"></div>
+                <div class="dayHourPictureDiv"></div>
+                <div class="dayHourTemperatureDiv"></div>
+                <div class="dayHourSkyDescriptionDiv"></div>
+                <div class="dayHourWindDescriptionDiv"></div>
+                <div class="dayHourHumidityDiv"></div>
+            </div>
+            <div id="dayHourDiv14">
+                <div class="dayHourTimeDiv"></div>
+                <div class="dayHourPictureDiv"></div>
+                <div class="dayHourTemperatureDiv"></div>
+                <div class="dayHourSkyDescriptionDiv"></div>
+                <div class="dayHourWindDescriptionDiv"></div>
+                <div class="dayHourHumidityDiv"></div>
+            </div>
+            <div id="dayHourDiv15">
+                <div class="dayHourTimeDiv"></div>
+                <div class="dayHourPictureDiv"></div>
+                <div class="dayHourTemperatureDiv"></div>
+                <div class="dayHourSkyDescriptionDiv"></div>
+                <div class="dayHourWindDescriptionDiv"></div>
+                <div class="dayHourHumidityDiv"></div>
+            </div>
+            <div id="dayHourDiv16">
+                <div class="dayHourTimeDiv"></div>
+                <div class="dayHourPictureDiv"></div>
+                <div class="dayHourTemperatureDiv"></div>
+                <div class="dayHourSkyDescriptionDiv"></div>
+                <div class="dayHourWindDescriptionDiv"></div>
+                <div class="dayHourHumidityDiv"></div>
+            </div>
+            <div id="dayHourDiv17">
+                <div class="dayHourTimeDiv"></div>
+                <div class="dayHourPictureDiv"></div>
+                <div class="dayHourTemperatureDiv"></div>
+                <div class="dayHourSkyDescriptionDiv"></div>
+                <div class="dayHourWindDescriptionDiv"></div>
+                <div class="dayHourHumidityDiv"></div>
+            </div>
+            <div id="dayHourDiv18">
+                <div class="dayHourTimeDiv"></div>
+                <div class="dayHourPictureDiv"></div>
+                <div class="dayHourTemperatureDiv"></div>
+                <div class="dayHourSkyDescriptionDiv"></div>
+                <div class="dayHourWindDescriptionDiv"></div>
+                <div class="dayHourHumidityDiv"></div>
+            </div>
+            <div id="dayHourDiv19">
+                <div class="dayHourTimeDiv"></div>
+                <div class="dayHourPictureDiv"></div>
+                <div class="dayHourTemperatureDiv"></div>
+                <div class="dayHourSkyDescriptionDiv"></div>
+                <div class="dayHourWindDescriptionDiv"></div>
+                <div class="dayHourHumidityDiv"></div>
+            </div>
+            <div id="dayHourDiv20">
+                <div class="dayHourTimeDiv"></div>
+                <div class="dayHourPictureDiv"></div>
+                <div class="dayHourTemperatureDiv"></div>
+                <div class="dayHourSkyDescriptionDiv"></div>
+                <div class="dayHourWindDescriptionDiv"></div>
+                <div class="dayHourHumidityDiv"></div>
+            </div>
+            <div id="dayHourDiv21">
+                <div class="dayHourTimeDiv"></div>
+                <div class="dayHourPictureDiv"></div>
+                <div class="dayHourTemperatureDiv"></div>
+                <div class="dayHourSkyDescriptionDiv"></div>
+                <div class="dayHourWindDescriptionDiv"></div>
+                <div class="dayHourHumidityDiv"></div>
+            </div>
+            <div id="dayHourDiv22">
+                <div class="dayHourTimeDiv"></div>
+                <div class="dayHourPictureDiv"></div>
+                <div class="dayHourTemperatureDiv"></div>
+                <div class="dayHourSkyDescriptionDiv"></div>
+                <div class="dayHourWindDescriptionDiv"></div>
+                <div class="dayHourHumidityDiv"></div>
+            </div>
+            <div id="dayHourDiv23">
+                <div class="dayHourTimeDiv"></div>
+                <div class="dayHourPictureDiv"></div>
+                <div class="dayHourTemperatureDiv"></div>
+                <div class="dayHourSkyDescriptionDiv"></div>
+                <div class="dayHourWindDescriptionDiv"></div>
+                <div class="dayHourHumidityDiv"></div>
+            </div>
+        </div>
+    </div>
+    <p class="infoBarDescription">Day Description</p>
+    <div id="dayDescription">
+        <div id="dayDescriptionSunrise"></div>
+        <div id="dayDescriptionSunset"></div>
+        <div id="dayDescriptionMaxWindspeed"></div>
+        <div id="dayDescriptionAverageHumidity"></div>
+    </div>
+    <p class="infoBarDescription">Week graph</p>
+    <div id="graphDataTypeCheckboxes">
+        <input type="checkbox" name="graphDataTypeCheckbox" id="graphDailyMaxTemperatureCheckbox">
+        <label for="graphDailyMaxTemperatureCheckbox">Daily maximum temperature</label>
+        <input type="checkbox" name="graphDataTypeCheckbox" id="graphDailyMinTemperatureCheckbox">
+        <label for="graphDailyMinTemperatureCheckbox">Daily minimum temperature</label>
+        <input type="checkbox" name="graphDataTypeCheckbox" id="graphDailyAverageTemperatureCheckbox">
+        <label for="graphDailyAverageTemperatureCheckbox">Daily average temperature</label>
+        <input type="checkbox" name="graphDataTypeCheckbox" id="graphHourlyTemperatureCheckbox" checked>
+        <label for="graphHourlyTemperatureCheckbox">Hourly Temperature</label>
+        <button id="drawGraphsButton">Draw graphs</button>
     </div>
     <div id="weatherGraphWrapper">
         <div id="graphTemperatureMarksBar">
@@ -358,218 +359,8 @@
             <p id="graphDailyAverageDetails"></p>
         </div>
     </div>
-</div>
-<div id="dayDetailsDisplay">
-    <div id="dayDetailsGeneralInfo">
-        <div class="dayDetailsGeneralDateDiv"></div>
-        <div class="dayDetailsGeneralTemperatureDiv"></div>
-        <div class="dayDetailsGeneralSunriseTimeDiv"></div>
-        <div class="dayDetailsGeneralSunsetTimeDiv"></div>
-    </div>
-    <div id="dayDetailsHours">
-        <div id="dayDetailsHourDiv0">
-            <div class="dayDetailsHourTimeDiv"></div>
-            <div class="dayDetailsHourPictureDiv"></div>
-            <div class="dayDetailsHourSkyDescriptionDiv"></div>
-            <div class="dayDetailsHourWindDescriptionDiv"></div>
-            <div class="dayDetailsHourTemperatureDiv"></div>
-            <div class="dayDetailsHourHumidityDiv"></div>
-        </div>
-        <div id="dayDetailsHourDiv1">
-            <div class="dayDetailsHourTimeDiv"></div>
-            <div class="dayDetailsHourPictureDiv"></div>
-            <div class="dayDetailsHourSkyDescriptionDiv"></div>
-            <div class="dayDetailsHourWindDescriptionDiv"></div>
-            <div class="dayDetailsHourTemperatureDiv"></div>
-            <div class="dayDetailsHourHumidityDiv"></div>
-        </div>
-        <div id="dayDetailsHourDiv2">
-            <div class="dayDetailsHourTimeDiv"></div>
-            <div class="dayDetailsHourPictureDiv"></div>
-            <div class="dayDetailsHourSkyDescriptionDiv"></div>
-            <div class="dayDetailsHourWindDescriptionDiv"></div>
-            <div class="dayDetailsHourTemperatureDiv"></div>
-            <div class="dayDetailsHourHumidityDiv"></div>
-        </div>
-        <div id="dayDetailsHourDiv3">
-            <div class="dayDetailsHourTimeDiv"></div>
-            <div class="dayDetailsHourPictureDiv"></div>
-            <div class="dayDetailsHourSkyDescriptionDiv"></div>
-            <div class="dayDetailsHourWindDescriptionDiv"></div>
-            <div class="dayDetailsHourTemperatureDiv"></div>
-            <div class="dayDetailsHourHumidityDiv"></div>
-        </div>
-        <div id="dayDetailsHourDiv4">
-            <div class="dayDetailsHourTimeDiv"></div>
-            <div class="dayDetailsHourPictureDiv"></div>
-            <div class="dayDetailsHourSkyDescriptionDiv"></div>
-            <div class="dayDetailsHourWindDescriptionDiv"></div>
-            <div class="dayDetailsHourTemperatureDiv"></div>
-            <div class="dayDetailsHourHumidityDiv"></div>
-        </div>
-        <div id="dayDetailsHourDiv5">
-            <div class="dayDetailsHourTimeDiv"></div>
-            <div class="dayDetailsHourPictureDiv"></div>
-            <div class="dayDetailsHourSkyDescriptionDiv"></div>
-            <div class="dayDetailsHourWindDescriptionDiv"></div>
-            <div class="dayDetailsHourTemperatureDiv"></div>
-            <div class="dayDetailsHourHumidityDiv"></div>
-        </div>
-        <div id="dayDetailsHourDiv6">
-            <div class="dayDetailsHourTimeDiv"></div>
-            <div class="dayDetailsHourPictureDiv"></div>
-            <div class="dayDetailsHourSkyDescriptionDiv"></div>
-            <div class="dayDetailsHourWindDescriptionDiv"></div>
-            <div class="dayDetailsHourTemperatureDiv"></div>
-            <div class="dayDetailsHourHumidityDiv"></div>
-        </div>
-        <div id="dayDetailsHourDiv7">
-            <div class="dayDetailsHourTimeDiv"></div>
-            <div class="dayDetailsHourPictureDiv"></div>
-            <div class="dayDetailsHourSkyDescriptionDiv"></div>
-            <div class="dayDetailsHourWindDescriptionDiv"></div>
-            <div class="dayDetailsHourTemperatureDiv"></div>
-            <div class="dayDetailsHourHumidityDiv"></div>
-        </div>
-        <div id="dayDetailsHourDiv8">
-            <div class="dayDetailsHourTimeDiv"></div>
-            <div class="dayDetailsHourPictureDiv"></div>
-            <div class="dayDetailsHourSkyDescriptionDiv"></div>
-            <div class="dayDetailsHourWindDescriptionDiv"></div>
-            <div class="dayDetailsHourTemperatureDiv"></div>
-            <div class="dayDetailsHourHumidityDiv"></div>
-        </div>
-        <div id="dayDetailsHourDiv9">
-            <div class="dayDetailsHourTimeDiv"></div>
-            <div class="dayDetailsHourPictureDiv"></div>
-            <div class="dayDetailsHourSkyDescriptionDiv"></div>
-            <div class="dayDetailsHourWindDescriptionDiv"></div>
-            <div class="dayDetailsHourTemperatureDiv"></div>
-            <div class="dayDetailsHourHumidityDiv"></div>
-        </div>
-        <div id="dayDetailsHourDiv10">
-            <div class="dayDetailsHourTimeDiv"></div>
-            <div class="dayDetailsHourPictureDiv"></div>
-            <div class="dayDetailsHourSkyDescriptionDiv"></div>
-            <div class="dayDetailsHourWindDescriptionDiv"></div>
-            <div class="dayDetailsHourTemperatureDiv"></div>
-            <div class="dayDetailsHourHumidityDiv"></div>
-        </div>
-        <div id="dayDetailsHourDiv11">
-            <div class="dayDetailsHourTimeDiv"></div>
-            <div class="dayDetailsHourPictureDiv"></div>
-            <div class="dayDetailsHourSkyDescriptionDiv"></div>
-            <div class="dayDetailsHourWindDescriptionDiv"></div>
-            <div class="dayDetailsHourTemperatureDiv"></div>
-            <div class="dayDetailsHourHumidityDiv"></div>
-        </div>
-        <div id="dayDetailsHourDiv12">
-            <div class="dayDetailsHourTimeDiv"></div>
-            <div class="dayDetailsHourPictureDiv"></div>
-            <div class="dayDetailsHourSkyDescriptionDiv"></div>
-            <div class="dayDetailsHourWindDescriptionDiv"></div>
-            <div class="dayDetailsHourTemperatureDiv"></div>
-            <div class="dayDetailsHourHumidityDiv"></div>
-        </div>
-        <div id="dayDetailsHourDiv13">
-            <div class="dayDetailsHourTimeDiv"></div>
-            <div class="dayDetailsHourPictureDiv"></div>
-            <div class="dayDetailsHourSkyDescriptionDiv"></div>
-            <div class="dayDetailsHourWindDescriptionDiv"></div>
-            <div class="dayDetailsHourTemperatureDiv"></div>
-            <div class="dayDetailsHourHumidityDiv"></div>
-        </div>
-        <div id="dayDetailsHourDiv14">
-            <div class="dayDetailsHourTimeDiv"></div>
-            <div class="dayDetailsHourPictureDiv"></div>
-            <div class="dayDetailsHourSkyDescriptionDiv"></div>
-            <div class="dayDetailsHourWindDescriptionDiv"></div>
-            <div class="dayDetailsHourTemperatureDiv"></div>
-            <div class="dayDetailsHourHumidityDiv"></div>
-        </div>
-        <div id="dayDetailsHourDiv15">
-            <div class="dayDetailsHourTimeDiv"></div>
-            <div class="dayDetailsHourPictureDiv"></div>
-            <div class="dayDetailsHourSkyDescriptionDiv"></div>
-            <div class="dayDetailsHourWindDescriptionDiv"></div>
-            <div class="dayDetailsHourTemperatureDiv"></div>
-            <div class="dayDetailsHourHumidityDiv"></div>
-        </div>
-        <div id="dayDetailsHourDiv16">
-            <div class="dayDetailsHourTimeDiv"></div>
-            <div class="dayDetailsHourPictureDiv"></div>
-            <div class="dayDetailsHourSkyDescriptionDiv"></div>
-            <div class="dayDetailsHourWindDescriptionDiv"></div>
-            <div class="dayDetailsHourTemperatureDiv"></div>
-            <div class="dayDetailsHourHumidityDiv"></div>
-        </div>
-        <div id="dayDetailsHourDiv17">
-            <div class="dayDetailsHourTimeDiv"></div>
-            <div class="dayDetailsHourPictureDiv"></div>
-            <div class="dayDetailsHourSkyDescriptionDiv"></div>
-            <div class="dayDetailsHourWindDescriptionDiv"></div>
-            <div class="dayDetailsHourTemperatureDiv"></div>
-            <div class="dayDetailsHourHumidityDiv"></div>
-        </div>
-        <div id="dayDetailsHourDiv18">
-            <div class="dayDetailsHourTimeDiv"></div>
-            <div class="dayDetailsHourPictureDiv"></div>
-            <div class="dayDetailsHourSkyDescriptionDiv"></div>
-            <div class="dayDetailsHourWindDescriptionDiv"></div>
-            <div class="dayDetailsHourTemperatureDiv"></div>
-            <div class="dayDetailsHourHumidityDiv"></div>
-        </div>
-        <div id="dayDetailsHourDiv19">
-            <div class="dayDetailsHourTimeDiv"></div>
-            <div class="dayDetailsHourPictureDiv"></div>
-            <div class="dayDetailsHourSkyDescriptionDiv"></div>
-            <div class="dayDetailsHourWindDescriptionDiv"></div>
-            <div class="dayDetailsHourTemperatureDiv"></div>
-            <div class="dayDetailsHourHumidityDiv"></div>
-        </div>
-        <div id="dayDetailsHourDiv20">
-            <div class="dayDetailsHourTimeDiv"></div>
-            <div class="dayDetailsHourPictureDiv"></div>
-            <div class="dayDetailsHourSkyDescriptionDiv"></div>
-            <div class="dayDetailsHourWindDescriptionDiv"></div>
-            <div class="dayDetailsHourTemperatureDiv"></div>
-            <div class="dayDetailsHourHumidityDiv"></div>
-        </div>
-        <div id="dayDetailsHourDiv21">
-            <div class="dayDetailsHourTimeDiv"></div>
-            <div class="dayDetailsHourPictureDiv"></div>
-            <div class="dayDetailsHourSkyDescriptionDiv"></div>
-            <div class="dayDetailsHourWindDescriptionDiv"></div>
-            <div class="dayDetailsHourTemperatureDiv"></div>
-            <div class="dayDetailsHourHumidityDiv"></div>
-        </div>
-        <div id="dayDetailsHourDiv22">
-            <div class="dayDetailsHourTimeDiv"></div>
-            <div class="dayDetailsHourPictureDiv"></div>
-            <div class="dayDetailsHourSkyDescriptionDiv"></div>
-            <div class="dayDetailsHourWindDescriptionDiv"></div>
-            <div class="dayDetailsHourTemperatureDiv"></div>
-            <div class="dayDetailsHourHumidityDiv"></div>
-        </div>
-        <div id="dayDetailsHourDiv23">
-            <div class="dayDetailsHourTimeDiv"></div>
-            <div class="dayDetailsHourPictureDiv"></div>
-            <div class="dayDetailsHourSkyDescriptionDiv"></div>
-            <div class="dayDetailsHourWindDescriptionDiv"></div>
-            <div class="dayDetailsHourTemperatureDiv"></div>
-            <div class="dayDetailsHourHumidityDiv"></div>
-        </div>
-    </div>
 
 </div>
-<button id="updateWeatherButton">Update weather</button>
-<input type="radio" id="farenheits" name="chooseDegreeUnits">
-<label for="farenheits">F°</label>
-<input type="radio" id="celsius" name="chooseDegreeUnits" checked>
-<label for="celsius">C°</label>
-
-<div id="overlayMask" class="hidden"></div>
-<div id="closeButton" class="hidden"></div>
 
 
 <script src="index.js" type="module"></script>
