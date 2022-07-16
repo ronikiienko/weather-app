@@ -3,14 +3,18 @@ import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import storageChangedEmitter from 'storage-changed';
 import {drawGraphs, isDrawing} from './graphDrawer';
+import weatherDataTypeIcons from './images/icons/*.svg';
 import {renderAllWeather, renderCurrentTime, renderDayDetails, renderMyPosition} from './renderer';
 import {
     detectPosition,
+    drawPictureBySrc,
     getDayInfoStringForArrNum,
     getPositionByCity,
     handleCheckedGraphCheckboxesForDetails,
+    handleOffsetFromCanvas,
     setGraphSwitchesData,
     setOrDeleteBackgroundWhite,
+    setSelectionByDayNumber,
     setUnitSwitchesData,
     weather,
 } from './utils';
@@ -22,6 +26,7 @@ import {
     citySuggestions,
     detectPositionButton,
     drawGraphsButton,
+    forecastDayDivs,
     graphCheckboxes,
     graphCheckboxesIds,
     graphDetailsBar,
@@ -155,26 +160,7 @@ window.setInterval(function () {
 
 // graphDetailsBar.style.display = 'none';
 
-function handleOffsetFromCanvas(offsetX, arrayLength) {
-    const offsetFromCanvasX = offsetX;
 
-    let mouseMoveOffsetRatio = offsetFromCanvasX / canvasWidth;
-    let data;
-    if (arrayLength) {
-        data = {
-            numberInDailyArr: Math.floor(7 * mouseMoveOffsetRatio),
-            numberInHourlyArr: Math.floor(168 * mouseMoveOffsetRatio),
-            numberInGivenArr: Math.floor(arrayLength * mouseMoveOffsetRatio),
-        };
-    } else {
-        data = {
-            numberInDailyArr: Math.floor(7 * mouseMoveOffsetRatio),
-            numberInHourlyArr: Math.floor(168 * mouseMoveOffsetRatio),
-        };
-    }
-
-    return data;
-}
 
 canvas.addEventListener('mousemove', (event) => {
 
@@ -223,6 +209,7 @@ canvas.addEventListener('mouseleave', () => {
 canvas.addEventListener('click', (event) => {
     let arrNumbers = handleOffsetFromCanvas(event.offsetX);
     renderDayDetails(weather, arrNumbers.numberInDailyArr);
+    setSelectionByDayNumber(forecastDayDivs, arrNumbers.numberInDailyArr);
 });
 
 let interval;
@@ -243,7 +230,6 @@ window.addEventListener('resize', () => {
 weatherForecastDisplay.addEventListener('click', (event) => {
     let target = event.target;
     console.log(target);
-    let forecastDayDivs = document.querySelectorAll('.weatherForecastDayDiv');
 
     function goNodeUp() {
         if (!target.classList.contains('weatherForecastDayDiv')) {
@@ -251,20 +237,13 @@ weatherForecastDisplay.addEventListener('click', (event) => {
             goNodeUp();
         } else {
             renderDayDetails(weather, target.id[8]);
-            console.log(target.id);
-            for (let forecastDayDiv of forecastDayDivs) {
-                if (forecastDayDiv !== target) {
-                    setOrDeleteBackgroundWhite(forecastDayDiv, 'delete');
-                }
-            }
-            setOrDeleteBackgroundWhite(target, 'set');
+            setSelectionByDayNumber(forecastDayDivs, target.id[8]);
         }
     }
 
     goNodeUp();
 });
-
-
+drawPictureBySrc(document.body, weatherDataTypeIcons['droplet'], weatherForecastDisplay);
 
 
 

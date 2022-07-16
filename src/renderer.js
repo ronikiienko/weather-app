@@ -1,6 +1,9 @@
 import dayjs from 'dayjs';
+import weatherDataTypeIcons from './images/icons/*.svg';
+
 import {
     averageNumberFromArray,
+    drawPictureBySrc,
     getCurrentHourNumberInHourArray,
     getCurrentTimeOfDay,
     getDayInfoStringForArrNum,
@@ -23,12 +26,6 @@ import {
     weatherDisplay,
 } from './variables';
 
-
-function drawPictureBySrc(whereToAppend, src) {
-    const image = document.createElement('img');
-    image.src = src;
-    whereToAppend.appendChild(image);
-}
 
 function renderCurrentWeather(weather, position) {
     ;
@@ -163,6 +160,7 @@ export function renderHourlyDetails(weather, dayNumberInArray) {
 
         dayDetailsHourWindDescriptionDiv.textContent = handleWindspeed(weather.hourly.windspeed_10m[numberInHourlyArray]).windspeedName;
         drawPictureBySrc(dayDetailsHourPictureDiv, weathercodeData.image);
+        drawPictureBySrc(dayDetailsHourDiv, weatherDataTypeIcons['droplet.svg'], dayDetailsHourHumidityDiv);
     }
 }
 

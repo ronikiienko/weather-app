@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import weatherIcons from './images/pack1svg/*.svg';
-import {currentWeatherDisplay, detectPositionButton, drawGraphsButton, graphCheckboxes} from './variables';
+import {canvasWidth, currentWeatherDisplay, detectPositionButton, drawGraphsButton, graphCheckboxes} from './variables';
 
 
 export let weather;
@@ -107,6 +107,17 @@ export function detectPosition() {
                 });
         });
 }
+
+export function drawPictureBySrc(whereToAppend, src, insertBefore) {
+    const image = document.createElement('img');
+    image.src = src;
+    if (insertBefore) {
+        whereToAppend.insertBefore(image, insertBefore);
+    } else {
+        whereToAppend.appendChild(image);
+    }
+}
+
 
 export function handleWeathercode(weathercode, timeOfTheDay) {
     let weathercodeTextMessage;
@@ -434,6 +445,27 @@ export function getMaxMinWeeklyTemperature(weather) {
     return data;
 }
 
+export function handleOffsetFromCanvas(offsetX, arrayLength) {
+    const offsetFromCanvasX = offsetX;
+
+    let mouseMoveOffsetRatio = offsetFromCanvasX / canvasWidth;
+    let data;
+    if (arrayLength) {
+        data = {
+            numberInDailyArr: Math.floor(7 * mouseMoveOffsetRatio),
+            numberInHourlyArr: Math.floor(168 * mouseMoveOffsetRatio),
+            numberInGivenArr: Math.floor(arrayLength * mouseMoveOffsetRatio),
+        };
+    } else {
+        data = {
+            numberInDailyArr: Math.floor(7 * mouseMoveOffsetRatio),
+            numberInHourlyArr: Math.floor(168 * mouseMoveOffsetRatio),
+        };
+    }
+
+    return data;
+}
+
 export function checkedRadioForName(parentDiv, checkedNotChecked, name) {
     let checkedRadio;
     let notCheckedRadio;
@@ -448,9 +480,19 @@ export function checkedRadioForName(parentDiv, checkedNotChecked, name) {
 
 export function setOrDeleteBackgroundWhite(element, setOrDelete, transparency) {
     if (setOrDelete === 'set') {
-        element.style.backgroundColor = `rgba(255,255,255,0.2)`;
+        element.style.backgroundColor = `rgba(255, 255, 255, 0.2)`;
     } else if (setOrDelete === 'delete') {
         element.style.backgroundColor = `transparent`;
+    }
+}
+
+export function setSelectionByDayNumber(arrayOfElements, numberOfSelectedElement) {
+    for (let arrayElement of arrayOfElements) {
+        if (arrayElement.id.includes(numberOfSelectedElement)) {
+            setOrDeleteBackgroundWhite(arrayElement, 'set');
+            continue;
+        }
+        setOrDeleteBackgroundWhite(arrayElement, 'delete');
     }
 }
 

@@ -31,6 +31,7 @@ export const weatherForecastDayDiv = document.querySelectorAll('weatherForecastD
 export const updateWeatherButton = document.getElementById('updateWeatherButton');
 export const chooseDegreeUnitRadios = document.querySelectorAll('input[name=\'chooseDegreeUnit\']');
 export const weatherForecastDisplay = document.getElementById('weatherForecastDisplay');
+export const forecastDayDivs = document.querySelectorAll('.weatherForecastDayDiv');
 
 
 export const canvas = document.getElementById('weatherGraph');

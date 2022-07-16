@@ -203,6 +203,21 @@ body {
     height: 40px;
 }
 
+#dayHourlyDisplay {
+    padding: 1rem 0rem;
+    overflow-x: scroll;
+}
+
+#dayHours {
+    width: 3200px;
+    display: flex;
+}
+
+#dayHours > * {
+    width: 200px;
+    margin: 0px 10px;
+}
+
 
 #weatherGraph {
     border: cyan 1px solid;
@@ -255,20 +270,7 @@ body {
     margin: 0px;
 }
 
-#dayHourlyDisplay {
-    padding: 1rem 0rem;
-    overflow-x: scroll;
-}
 
-#dayHours {
-    width: 3600px;
-    display: flex;
-}
-
-#dayHours > * {
-    width: 200px;
-    margin: 0px 10px;
-}
 
 
 .hidden {
