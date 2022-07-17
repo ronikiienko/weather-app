@@ -138,33 +138,40 @@ export function renderHourlyDetails(weather, dayNumberInArray) {
 
         const dayDetailsHourDiv = document.getElementById(`dayHourDiv${i}`);
 
-        const dayDetailsHourTimeDiv = dayDetailsHourDiv.querySelector('.dayHourTimeDiv');
-        const dayDetailsHourPictureDiv = dayDetailsHourDiv.querySelector('.dayHourPictureDiv');
-        const dayDetailsHourSkyDescriptionDiv = dayDetailsHourDiv.querySelector('.dayHourSkyDescriptionDiv');
-        const dayDetailsHourWindDescriptionDiv = dayDetailsHourDiv.querySelector('.dayHourWindDescriptionDiv');
-        const dayDetailsHourTemperatureDiv = dayDetailsHourDiv.querySelector('.dayHourTemperatureDiv');
-        const dayDetailsHourHumidityDiv = dayDetailsHourDiv.querySelector('.dayHourHumidityDiv');
+        const dayHourTimeDiv = dayDetailsHourDiv.querySelector('.dayHourTimeDiv');
+        const dayHourPictureDiv = dayDetailsHourDiv.querySelector('.dayHourPictureDiv');
+        const dayHourSkyDescriptionDiv = dayDetailsHourDiv.querySelector('.dayHourSkyDescriptionDiv');
+        const dayHourWindDescriptionDiv = dayDetailsHourDiv.querySelector('.dayHourWindDescriptionDiv');
+        const dayHourTemperatureDiv = dayDetailsHourDiv.querySelector('.dayHourTemperatureDiv');
+        const dayHourHumidityDiv = dayDetailsHourDiv.querySelector('.dayHourHumidityDiv');
+        const dayHourHumidityPictureDiv = dayDetailsHourDiv.querySelector('.dayHourHumidityPictureDiv');
+        const dayHourWindPictureDiv = dayDetailsHourDiv.querySelector('.dayHourWindPictureDiv');
 
-        dayDetailsHourPictureDiv.textContent = '';
+        dayHourPictureDiv.textContent = '';
+        dayHourWindPictureDiv.textContent = '';
+        dayHourHumidityPictureDiv.textContent = '';
 
         const time = weather.hourly.time[i].slice(11, 16);
         const timeOfDay = getTimeOfDayForHour(time);
 
         const weathercodeData = handleWeathercode(weather.hourly.weathercode[numberInHourlyArray], timeOfDay);
 
-        dayDetailsHourTemperatureDiv.textContent = weather.hourly.temperature_2m[numberInHourlyArray] + '°';
-        dayDetailsHourHumidityDiv.textContent = `${weather.hourly.relativehumidity_2m[numberInHourlyArray]}%`;
-        dayDetailsHourSkyDescriptionDiv.textContent = weathercodeData.message;
-        dayDetailsHourTimeDiv.textContent = time;
+        dayHourTemperatureDiv.textContent = `${Math.round(weather.hourly.temperature_2m[numberInHourlyArray])}°`;
+        dayHourHumidityDiv.textContent = `${weather.hourly.relativehumidity_2m[numberInHourlyArray]}%`;
+        dayHourSkyDescriptionDiv.textContent = weathercodeData.message;
+        dayHourTimeDiv.textContent = time;
 
 
-        dayDetailsHourWindDescriptionDiv.textContent = handleWindspeed(weather.hourly.windspeed_10m[numberInHourlyArray]).windspeedName;
-        drawPictureBySrc(dayDetailsHourPictureDiv, weathercodeData.image);
-        drawPictureBySrc(dayDetailsHourDiv, weatherDataTypeIcons['droplet.svg'], dayDetailsHourHumidityDiv);
+        dayHourWindDescriptionDiv.textContent = `${weather.hourly.windspeed_10m[numberInHourlyArray]} ${weather.hourly_units.windspeed_10m}`;
+        drawPictureBySrc(dayHourPictureDiv, weathercodeData.image);
+        drawPictureBySrc(dayHourHumidityPictureDiv, weatherDataTypeIcons['droplet']);
+        drawPictureBySrc(dayHourWindPictureDiv, weatherDataTypeIcons['wind']);
+
     }
 }
 
 export function renderDayDescription(weather, dayNumberInArray) {
+    console.log(weather);
     {
         const dayDescriptionSunrise = document.getElementById('dayDescriptionSunrise');
         const dayDescriptionSunset = document.getElementById('dayDescriptionSunset');
@@ -172,13 +179,13 @@ export function renderDayDescription(weather, dayNumberInArray) {
         const dayDescriptionAverageHumidity = document.getElementById('dayDescriptionAverageHumidity');
         dayDescriptionSunrise.textContent = weather.daily.sunrise[dayNumberInArray].slice(11, 16);
         dayDescriptionSunset.textContent = weather.daily.sunset[dayNumberInArray].slice(11, 16);
-        dayDescriptionMaxWindspeed.textContent = weather.daily.windspeed_10m_max[dayNumberInArray];
+        dayDescriptionMaxWindspeed.textContent = `${weather.daily.windspeed_10m_max[dayNumberInArray]} ${weather.daily_units.windspeed_10m_max}`;
 
 
         const allDayHoursArrayNumbers = [dayNumberInArray * 24, dayNumberInArray * 24 + 24];
         const allHoursHumidityByDay = weather.hourly.relativehumidity_2m.slice(allDayHoursArrayNumbers[0], allDayHoursArrayNumbers[1]);
 
-        dayDescriptionAverageHumidity.textContent = averageNumberFromArray(allHoursHumidityByDay);
+        dayDescriptionAverageHumidity.textContent = `${averageNumberFromArray(allHoursHumidityByDay)} ${weather.hourly_units.relativehumidity_2m}`;
     }
 }
 

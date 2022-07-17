@@ -108,14 +108,11 @@ export function detectPosition() {
         });
 }
 
-export function drawPictureBySrc(whereToAppend, src, insertBefore) {
+export function drawPictureBySrc(whereToAppend, src) {
     const image = document.createElement('img');
     image.src = src;
-    if (insertBefore) {
-        whereToAppend.insertBefore(image, insertBefore);
-    } else {
-        whereToAppend.appendChild(image);
-    }
+    whereToAppend.appendChild(image);
+
 }
 
 

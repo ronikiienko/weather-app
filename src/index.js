@@ -3,11 +3,9 @@ import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import storageChangedEmitter from 'storage-changed';
 import {drawGraphs, isDrawing} from './graphDrawer';
-import weatherDataTypeIcons from './images/icons/*.svg';
 import {renderAllWeather, renderCurrentTime, renderDayDetails, renderMyPosition} from './renderer';
 import {
     detectPosition,
-    drawPictureBySrc,
     getDayInfoStringForArrNum,
     getPositionByCity,
     handleCheckedGraphCheckboxesForDetails,
@@ -47,11 +45,24 @@ for (let chooseDegreeUnitRadio of chooseDegreeUnitRadios) {
 
 
 let suggestedCitiesInfo = null;
-
+chooseCityInput.addEventListener('click', () => {
+    if (chooseCityInput.value === '') {
+        detectPositionButton.classList.toggle('hidden');
+    }
+});
 chooseCityInput.addEventListener('input', async () => {
+    detectPositionButton.classList.remove('hidden');
+    citySuggestions.classList.add('hidden');
     citySuggestions.textContent = '';
+    if (chooseCityInput.value === '') {
+        detectPositionButton.classList.add('hidden');
+        citySuggestions.classList.add('hidden');
+    }
     const suggestionsResponse = await getPositionByCity(chooseCityInput.value);
-    if (!suggestionsResponse.results) return;
+    if (!suggestionsResponse.results) {
+        return;
+    }
+    citySuggestions.classList.remove('hidden');
     suggestedCitiesInfo = suggestionsResponse.results;
 
     for (let suggestedCityInfo of suggestedCitiesInfo) {
@@ -68,6 +79,8 @@ chooseCityInput.addEventListener('input', async () => {
 
 citySuggestions.addEventListener('click', (event) => {
     if (!event.target.classList.contains('citySuggestion')) return;
+    detectPositionButton.classList.add('hidden');
+    citySuggestions.classList.add('hidden');
     const id = event.target.id;
     for (let i = 0; i < suggestedCitiesInfo.length; i++) {
         const city = suggestedCitiesInfo[i];
@@ -243,7 +256,6 @@ weatherForecastDisplay.addEventListener('click', (event) => {
 
     goNodeUp();
 });
-drawPictureBySrc(document.body, weatherDataTypeIcons['droplet'], weatherForecastDisplay);
 
 
 

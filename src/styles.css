@@ -13,13 +13,13 @@ html {
 
 body {
     width: 80%;
+    max-width: 1200px;
     margin: auto;
     margin-top: 50px;
 }
 
 #chooseCityDiv {
     position: absolute;
-    overflow: auto;
 }
 
 #searchCity {
@@ -29,30 +29,34 @@ body {
     /*border-radius: 7px;*/
 }
 
+#detectPositionButton {
+    font-size: 1.5rem;
+    background-color: rgba(245, 222, 179, 0.4);
+    padding: 5px;
+    width: 300px;
+}
+
 #citySuggestions {
     width: 300px;
-    overflow-x: auto;
-    white-space: nowrap;
-    background-color: black;
+    background-color: #444444;
+    padding-bottom: 5px;
 }
 
-#citySuggestions > * {
-    padding: 5px 0px;
+#citySuggestions > *, #detectPositionButton {
+    padding: 5px 5px;
 }
 
-#citySuggestions > *:hover {
+#citySuggestions > *:hover, #detectPositionButton:hover {
     background-color: rgba(255, 255, 255, 0.4);
 }
 
-#citySuggestions > *:active {
+#citySuggestions > *:active, #detectPositionButton:hover {
     background-color: rgba(255, 255, 255, 0.5);
 }
 
-#detectPositionButton {
-    height: 35px;
-    position: absolute;
-    z-index: 2;
-    left: 400px;
+
+.hidden {
+    display: none;
 }
 
 
@@ -90,13 +94,13 @@ body {
 
 #currentTemperaturePicUnitsChoose {
     display: flex;
-    width: fit-content;
+    width: 400px;
     margin: auto;
 }
 
 #currentWeatherPictureDiv {
     flex: 1;
-    height: 40px;
+    height: 60px;
 }
 
 #currentWeatherPictureDiv img {
@@ -195,17 +199,65 @@ body {
     display: flex;
 }*/
 
-#dayHours > * {
+
+#dayHours > * > * {
     text-align: center;
 }
 
-#dayHours > * img {
+.dayHourPictureDiv {
+    margin-top: 15px;
+    height: 40px;
+}
+
+.dayHourPictureDiv img {
     height: 40px;
 }
 
 #dayHourlyDisplay {
     padding: 1rem 0rem;
     overflow-x: scroll;
+}
+
+.dayHourWindWrapper {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    /*padding-left: 15px;*/
+    margin: 3px 0px;
+}
+
+.dayHourHumidityWrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    /*padding-left: 15px;*/
+}
+
+.dayHourSkyDescriptionDiv {
+}
+
+.dayHourTemperatureDiv {
+    font-size: 1.5rem;
+    margin-bottom: 7px;
+    margin-top: 3px;
+}
+
+.dayHourWindPictureDiv {
+    height: 20px;
+}
+
+.dayHourWindPictureDiv img {
+    height: 20px;
+}
+
+.dayHourHumidityPictureDiv {
+    height: 17px;
+    padding-bottom: 2px;
+}
+
+.dayHourHumidityPictureDiv img {
+    height: 15px;
 }
 
 #dayHours {
@@ -216,6 +268,44 @@ body {
 #dayHours > * {
     width: 200px;
     margin: 0px 10px;
+}
+
+
+#dayDescription {
+    display: flex;
+    align-items: center;
+    width: 800px;
+}
+
+#dayDescription > * {
+    flex: 1;
+}
+
+#sunriseInfo, #sunsetInfo, #maxWindspeedInfo, #averageHumidityInfo {
+    display: flex;
+    align-items: center;
+    font-size: 1.7rem;
+}
+
+#dayDescriptionSunrise, #dayDescriptionSunset, #dayDescriptionMaxWindspeed, #dayDescriptionAverageHumidity {
+    flex: 3;
+    padding-left: 9px;
+}
+
+#dayDescriptionSunrisePicture, #dayDescriptionSunsetPicture, /*#dayDescriptionWindspeedPicture,*/
+#dayDescriptionHumidityPicture {
+    width: 60px;
+    flex: 1;
+}
+
+#dayDescriptionWindspeedPicture {
+    height: 78px;
+    width: 50px;
+}
+
+#dayDescriptionHumidityPicture {
+    height: 78px;
+    width: 10px;
 }
 
 
@@ -239,7 +329,7 @@ body {
 
 
 #weatherGraphWrapper {
-    margin-top: 20px;
+    margin-top: 5px;
     display: grid;
     grid-template-columns: 1fr 30fr;
     grid-template-rows: 10fr 1fr;
@@ -249,6 +339,7 @@ body {
     display: flex;
     grid-column: 2 / 3;
     grid-row: 2;
+    font-size: 1.2rem;
 }
 
 #graphDatesBar > * {
@@ -263,11 +354,16 @@ body {
     flex-direction: column;
     text-align: center;
     justify-content: space-between;
+    font-size: 1.2rem;
 }
 
 #graphTemperatureMarksBar > * {
 
     margin: 0px;
+}
+
+#graphDataTypeCheckboxes {
+    text-align: center;
 }
 
 
