@@ -3,7 +3,7 @@ import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import storageChangedEmitter from 'storage-changed';
 import {drawGraphs, isDrawing} from './graphDrawer';
-import {renderAllWeather, renderCurrentTime, renderDayDetails, renderMyPosition} from './renderer';
+import {renderAllWeather, renderCurrentTime, renderDayDetails} from './renderer';
 import {
     detectPosition,
     getDayInfoStringForArrNum,
@@ -172,7 +172,6 @@ window.setInterval(function () {
 }, 1000);
 
 // graphDetailsBar.style.display = 'none';
-
 
 
 canvas.addEventListener('mousemove', (event) => {
