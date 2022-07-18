@@ -183,10 +183,7 @@ canvas.addEventListener('mousemove', (event) => {
         return;
     }
 
-    const checkedGraphDataTypeCheckboxes = JSON.parse(localStorage.getItem('checkedGraphDataTypeCheckboxes'));
-
     let fillInfo;
-    let mouseMoveOffsetRatio = offsetFromCanvasX / canvasWidth;
     let arrayDateNumberFromRatio = arrNumbers.numberInDailyArr;
     let arrayHourNumberFromRatio = arrNumbers.numberInHourlyArr;
     document.getElementById('graphTimeDetails').textContent = weather.hourly.time[arrayHourNumberFromRatio].slice(11, 16);
@@ -202,7 +199,6 @@ canvas.addEventListener('mousemove', (event) => {
 
 
     const graphDetailsBarWidth = graphDetailsBar.offsetWidth;
-    const graphDetailsBarHeight = graphDetailsBar.offsetHeight;
     if (offsetFromCanvasX >= canvasWidth - graphDetailsBarWidth * 4) {
         graphDetailsBar.style.top = `${event.pageY + 10}px`;
         graphDetailsBar.style.left = `${event.pageX - 10 - graphDetailsBarWidth}px`;
