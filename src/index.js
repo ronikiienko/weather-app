@@ -10,6 +10,7 @@ import {
     getPositionByCity,
     handleCheckedGraphCheckboxesForDetails,
     handleOffsetFromCanvas,
+    setDefaultPosition,
     setGraphSwitchesData,
     setOrDeleteBackgroundWhite,
     setSelectionByDayNumber,
@@ -36,6 +37,7 @@ import {
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
+
 
 for (let chooseDegreeUnitRadio of chooseDegreeUnitRadios) {
     chooseDegreeUnitRadio.addEventListener('change', () => {
@@ -138,14 +140,15 @@ for (let graphCheckbox of graphCheckboxes) {
     });
 }
 
-function init() {
+async function init() {
     setOrDeleteBackgroundWhite(weatherForecastDisplay.querySelectorAll('.weatherForecastDayDiv')[0], 'set');
     if (!localStorage.getItem('position')) {
-        detectPosition();
+        await detectPosition();
     }
     if (localStorage.getItem('position') === null) {
         weatherDisplay.style.display = 'none';
         console.log('position is null');
+        setDefaultPosition();
     } else {
         weatherDisplay.style.display = 'block';
     }

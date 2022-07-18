@@ -7,9 +7,14 @@ export let weather;
 
 export function updateGeolocation() {
     return new Promise((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition((position) => {
-            resolve(position);
-        });
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                resolve(position);
+            },
+            (error) => {
+                reject();
+            },
+        );
     });
 }
 
@@ -87,9 +92,8 @@ export function getCurrentHourNumberInHourArray(timeZone) {
 }
 
 export function detectPosition() {
-    updateGeolocation()
+    return updateGeolocation()
         .then((response) => {
-
             getLocationDataByPosition(response)
                 .then((response) => {
                     const position = {
@@ -101,10 +105,13 @@ export function detectPosition() {
                         timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
 
                     };
-                    JSON.stringify(position);
-                    localStorage.setItem('position', position);
-
+                    localStorage.setItem('position', JSON.stringify(position));
+                    return position;
                 });
+        })
+        .catch((error) => {
+            console.log('error detecting location', error);
+            return null;
         });
 }
 
@@ -595,6 +602,16 @@ export function disableEnableGraphCheckboxes() {
     }
     drawGraphsButton.disabled = !checkIfDisabled(drawGraphsButton);
     detectPositionButton.disabled = !checkIfDisabled(detectPositionButton);
+}
 
-
+export function setDefaultPosition() {
+    const defaultPosition = {
+        'country': 'Ukraine',
+        'city': 'Kyiv',
+        'latitude': 50.45466,
+        'longitude': 30.5238,
+        'administrative': 'Kyiv City',
+        'timeZone': 'Europe/Kiev',
+    };
+    localStorage.setItem('position', JSON.stringify(defaultPosition));
 }
