@@ -28,7 +28,6 @@ import {
 
 
 function renderCurrentWeather(weather, position) {
-    ;
     const currentHourNumberInHourArray = getCurrentHourNumberInHourArray(position.timeZone);
     const currentWeather = weather.current_weather;
     currentWeatherPictureDiv.textContent = '';
