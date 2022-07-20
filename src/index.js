@@ -3,6 +3,7 @@ import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import storageChangedEmitter from 'storage-changed';
 import {drawGraphs, isDrawing} from './graphDrawer';
+import {setDefaultPosition, setDefaultUnits} from './images/defaults';
 import {renderAllWeather, renderCurrentTime, renderDayDetails} from './renderer';
 import {
     detectPosition,
@@ -10,7 +11,6 @@ import {
     getPositionByCity,
     handleCheckedGraphCheckboxesForDetails,
     handleOffsetFromCanvas,
-    setDefaultPosition,
     setGraphSwitchesData,
     setOrDeleteBackgroundWhite,
     setSelectionByDayNumber,
@@ -95,10 +95,7 @@ citySuggestions.addEventListener('click', (event) => {
                 administrative: city.admin1,
                 timeZone: city.timezone,
             };
-            JSON.stringify(position);
-            localStorage.setItem('position', position);
-
-
+            localStorage.setItem('position', JSON.stringify(position));
             break;
         }
     }
@@ -145,13 +142,17 @@ async function init() {
     if (!localStorage.getItem('position')) {
         await detectPosition();
     }
-    if (localStorage.getItem('position') === null) {
-        weatherDisplay.style.display = 'none';
-        console.log('position is null');
+    if (!localStorage.getItem('position')) {
+        console.log('have no position stored. use default');
         setDefaultPosition();
-    } else {
-        weatherDisplay.style.display = 'block';
     }
+
+    if (!localStorage.getItem('units')) {
+        setDefaultUnits();
+    }
+    weatherDisplay.style.display = 'block';
+    renderCurrentTime();
+
     setGraphSwitchesData();
     setUnitSwitchesData('init');
     if (localStorage.getItem('position')) {
@@ -169,7 +170,6 @@ async function init() {
 
 init();
 
-renderCurrentTime();
 window.setInterval(function () {
     renderCurrentTime();
 }, 1000);

@@ -603,15 +603,3 @@ export function disableEnableGraphCheckboxes() {
     drawGraphsButton.disabled = !checkIfDisabled(drawGraphsButton);
     detectPositionButton.disabled = !checkIfDisabled(detectPositionButton);
 }
-
-export function setDefaultPosition() {
-    const defaultPosition = {
-        'country': 'Ukraine',
-        'city': 'Kyiv',
-        'latitude': 50.45466,
-        'longitude': 30.5238,
-        'administrative': 'Kyiv City',
-        'timeZone': 'Europe/Kiev',
-    };
-    localStorage.setItem('position', JSON.stringify(defaultPosition));
-}
