@@ -523,7 +523,7 @@ export function setUnitSwitchesData(init) {
 export function setGraphSwitchesData() {
     const checkedGraphCheckboxes = document.querySelectorAll('input[name=graphDataTypeCheckbox]:checked');
     let checkedGraphChekboxesIds = [];
-    for (checkedGraphCheckbox of checkedGraphCheckboxes) {
+    for (let checkedGraphCheckbox of checkedGraphCheckboxes) {
         checkedGraphChekboxesIds.push(checkedGraphCheckbox.id);
     }
     const checkedGraphCheckboxesIdsStringified = JSON.stringify(checkedGraphChekboxesIds);
