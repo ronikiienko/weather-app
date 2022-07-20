@@ -12,7 +12,7 @@ export function updateGeolocation() {
                 resolve(position);
             },
             (error) => {
-                reject();
+                reject(error);
             },
         );
     });
