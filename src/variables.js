@@ -25,7 +25,7 @@ for (let graphCheckbox of graphCheckboxes) {
 export let drawGraphsButton = document.getElementById('drawGraphsButton');
 
 
-export const weatherForecastDayDiv = document.querySelectorAll('weatherForecastDayDiv');
+export const weatherForecastDayDiv = document.querySelectorAll('.weatherForecastDayDiv');
 
 
 export const updateWeatherButton = document.getElementById('updateWeatherButton');

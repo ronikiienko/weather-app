@@ -28,13 +28,10 @@ import {
 
 
 function renderCurrentWeather(weather, position) {
-    ;
     const currentHourNumberInHourArray = getCurrentHourNumberInHourArray(position.timeZone);
     const currentWeather = weather.current_weather;
     currentWeatherPictureDiv.textContent = '';
     const currentWeathercode = Number(currentWeather.weathercode);
-    const image = document.createElement('img');
-
 
     currentTemperatureDisplayDiv.textContent = `${Math.round(currentWeather.temperature)}°`;
     currentSkyDescriptionDiv.textContent = `${handleWeathercode(currentWeathercode, 'night').message}`;

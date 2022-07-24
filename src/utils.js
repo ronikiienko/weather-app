@@ -7,9 +7,14 @@ export let weather;
 
 export function updateGeolocation() {
     return new Promise((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition((position) => {
-            resolve(position);
-        });
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                resolve(position);
+            },
+            (error) => {
+                reject(error);
+            },
+        );
     });
 }
 
@@ -87,9 +92,8 @@ export function getCurrentHourNumberInHourArray(timeZone) {
 }
 
 export function detectPosition() {
-    updateGeolocation()
+    return updateGeolocation()
         .then((response) => {
-
             getLocationDataByPosition(response)
                 .then((response) => {
                     const position = {
@@ -101,10 +105,13 @@ export function detectPosition() {
                         timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
 
                     };
-                    JSON.stringify(position);
-                    localStorage.setItem('position', position);
-
+                    localStorage.setItem('position', JSON.stringify(position));
+                    return position;
                 });
+        })
+        .catch((error) => {
+            console.log('error detecting location', error);
+            return null;
         });
 }
 
@@ -516,7 +523,7 @@ export function setUnitSwitchesData(init) {
 export function setGraphSwitchesData() {
     const checkedGraphCheckboxes = document.querySelectorAll('input[name=graphDataTypeCheckbox]:checked');
     let checkedGraphChekboxesIds = [];
-    for (checkedGraphCheckbox of checkedGraphCheckboxes) {
+    for (let checkedGraphCheckbox of checkedGraphCheckboxes) {
         checkedGraphChekboxesIds.push(checkedGraphCheckbox.id);
     }
     const checkedGraphCheckboxesIdsStringified = JSON.stringify(checkedGraphChekboxesIds);
@@ -595,6 +602,4 @@ export function disableEnableGraphCheckboxes() {
     }
     drawGraphsButton.disabled = !checkIfDisabled(drawGraphsButton);
     detectPositionButton.disabled = !checkIfDisabled(detectPositionButton);
-
-
 }
