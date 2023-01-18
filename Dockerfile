@@ -8,4 +8,5 @@ ADD . .
 RUN npm run build
 
 FROM devforth/spa-to-http:latest
+ENV PORT="80"
 COPY --from=builder /code/dist/ .
